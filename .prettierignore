@@ -1,0 +1,13 @@
+# dependencies & build output
+node_modules
+dist
+.angular
+coverage
+
+# generated / managed
+package-lock.json
+
+# preserved configs & non-source assets
+.vscode
+.prompts
+assets
