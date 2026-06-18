@@ -13,7 +13,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/monitor-config" routerLinkActive="active">
             Monitor Config
@@ -29,6 +29,20 @@
           <a class="nav-link" routerLink="/monitor-list" routerLinkActive="active">Monitor List</a>
         </li>
       </ul>
+      <div class="d-flex gap-2">
+        <label class="btn btn-outline-light btn-sm mb-0">
+          Import
+          <input type="file" multiple accept=".json,.txt" (change)="import($event)" hidden />
+        </label>
+        <button type="button" class="btn btn-light btn-sm" (click)="exportAll()">Export all</button>
+      </div>
     </div>
   </div>
 </nav>
+
+<div *ngIf="message" class="container mt-3">
+  <div class="alert alert-dismissible mb-0" [ngClass]="'alert-' + message.type" role="alert">
+    {{ message.text }}
+    <button type="button" class="btn-close" (click)="dismiss()" aria-label="Close"></button>
+  </div>
+</div>
