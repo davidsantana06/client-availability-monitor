@@ -1,2 +1,102 @@
 <h1 class="h3 mb-3">Servers</h1>
-<p class="text-muted">Servers available for monitoring.</p>
+
+<div class="card mb-4">
+  <div class="card-header">{{ editingIndex === null ? 'Add server' : 'Edit server' }}</div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label" for="s-hostname">Hostname</label>
+          <input
+            id="s-hostname"
+            type="text"
+            class="form-control"
+            formControlName="hostname"
+            [class.is-invalid]="invalid('hostname')"
+          />
+          <div class="invalid-feedback">Hostname is required.</div>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label" for="s-port">Port</label>
+          <input
+            id="s-port"
+            type="number"
+            class="form-control"
+            formControlName="port"
+            [class.is-invalid]="invalid('port')"
+          />
+          <div class="invalid-feedback">Enter a valid port (1–65535).</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="s-ip">IP</label>
+          <input
+            id="s-ip"
+            type="text"
+            class="form-control"
+            formControlName="ip"
+            [class.is-invalid]="invalid('ip') || addressInvalid"
+          />
+          <div class="invalid-feedback">Enter a valid IPv4 address.</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="s-dns">DNS</label>
+          <input
+            id="s-dns"
+            type="text"
+            class="form-control"
+            formControlName="dns"
+            [class.is-invalid]="addressInvalid"
+          />
+        </div>
+      </div>
+      <div *ngIf="addressInvalid" class="text-danger small mt-2">
+        Provide exactly one of IP or DNS.
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+          {{ editingIndex === null ? 'Add' : 'Update' }}
+        </button>
+        <button
+          *ngIf="editingIndex !== null"
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th scope="col">Hostname</th>
+      <th scope="col">Address</th>
+      <th scope="col">Port</th>
+      <th scope="col" class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="servers$ | async as servers">
+    <tr *ngFor="let server of servers; let i = index">
+      <td>{{ server.hostname }}</td>
+      <td>
+        <span class="badge text-bg-secondary me-1">{{ server.ip ? 'IP' : 'DNS' }}</span>
+        {{ server.ip || server.dns }}
+      </td>
+      <td>{{ server.port }}</td>
+      <td class="text-end">
+        <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="edit(i)">
+          Edit
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)">
+          Remove
+        </button>
+      </td>
+    </tr>
+    <tr *ngIf="servers.length === 0">
+      <td colspan="4" class="text-center text-muted">No servers yet.</td>
+    </tr>
+  </tbody>
+</table>
