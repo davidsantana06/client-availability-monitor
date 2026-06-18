@@ -1,2 +1,73 @@
 <h1 class="h3 mb-3">Users</h1>
-<p class="text-muted">Notification recipients.</p>
+
+<div class="card mb-4">
+  <div class="card-header">{{ editingIndex === null ? 'Add user' : 'Edit user' }}</div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="row g-3">
+        <div class="col-md-5">
+          <label class="form-label" for="u-username">Username</label>
+          <input
+            id="u-username"
+            type="text"
+            class="form-control"
+            formControlName="username"
+            [class.is-invalid]="invalid('username')"
+          />
+          <div class="invalid-feedback">Username is required.</div>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="u-email">Email</label>
+          <input
+            id="u-email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+            [class.is-invalid]="invalid('email')"
+          />
+          <div class="invalid-feedback">Enter a valid e-mail address.</div>
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-primary">
+            {{ editingIndex === null ? 'Add' : 'Update' }}
+          </button>
+          <button
+            *ngIf="editingIndex !== null"
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col" class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="users$ | async as users">
+    <tr *ngFor="let user of users; let i = index">
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td class="text-end">
+        <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="edit(i)">
+          Edit
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)">
+          Remove
+        </button>
+      </td>
+    </tr>
+    <tr *ngIf="users.length === 0">
+      <td colspan="3" class="text-center text-muted">No users yet.</td>
+    </tr>
+  </tbody>
+</table>
