@@ -1,2 +1,31 @@
 <h1 class="h3 mb-3">Monitor List</h1>
-<p class="text-muted">Hostnames actively monitored.</p>
+
+<ng-container *ngIf="view$ | async as view">
+  <p class="text-muted">
+    Select which servers from the pool are actively monitored ({{ view.selectedCount }} selected).
+  </p>
+
+  <div *ngIf="view.orphans.length" class="alert alert-warning">
+    These hostnames are in the list but not in the servers pool (ignored by the monitor):
+    {{ view.orphans.join(', ') }}
+  </div>
+
+  <ul class="list-group mb-3" *ngIf="view.rows.length; else emptyPool">
+    <li class="list-group-item" *ngFor="let row of view.rows">
+      <div class="form-check mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [id]="'srv-' + row.hostname"
+          [checked]="row.checked"
+          (change)="toggle(row.hostname, $event)"
+        />
+        <label class="form-check-label" [for]="'srv-' + row.hostname">{{ row.hostname }}</label>
+      </div>
+    </li>
+  </ul>
+
+  <ng-template #emptyPool>
+    <p class="text-muted">No servers in the pool. Add servers in the Servers tab first.</p>
+  </ng-template>
+</ng-container>
