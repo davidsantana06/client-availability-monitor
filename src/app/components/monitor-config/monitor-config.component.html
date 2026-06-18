@@ -1,2 +1,147 @@
 <h1 class="h3 mb-3">Monitor Config</h1>
-<p class="text-muted">SMTP, timing and concurrency settings.</p>
+
+<div *ngIf="saved" class="alert alert-success" role="alert">Configuration saved.</div>
+<div *ngIf="failed" class="alert alert-danger" role="alert">
+  Please fix the highlighted fields before saving.
+</div>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <div class="card mb-4" formGroupName="smtp">
+    <div class="card-header">SMTP</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label" for="smtp-host">Host</label>
+          <input
+            id="smtp-host"
+            type="text"
+            class="form-control"
+            formControlName="host"
+            [class.is-invalid]="invalid('smtp.host')"
+          />
+          <div class="invalid-feedback">Host is required.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="smtp-port">Port</label>
+          <input
+            id="smtp-port"
+            type="number"
+            class="form-control"
+            formControlName="port"
+            [class.is-invalid]="invalid('smtp.port')"
+          />
+          <div class="invalid-feedback">Enter a valid port (1–65535).</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="smtp-username">Username</label>
+          <input
+            id="smtp-username"
+            type="text"
+            class="form-control"
+            formControlName="username"
+            [class.is-invalid]="invalid('smtp.username')"
+          />
+          <div class="invalid-feedback">Username is required.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="smtp-password">Password</label>
+          <input
+            id="smtp-password"
+            type="password"
+            class="form-control"
+            formControlName="password"
+            [class.is-invalid]="invalid('smtp.password')"
+          />
+          <div class="invalid-feedback">Password is required.</div>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label" for="smtp-from">From address</label>
+          <input
+            id="smtp-from"
+            type="email"
+            class="form-control"
+            formControlName="from_address"
+            [class.is-invalid]="invalid('smtp.from_address')"
+          />
+          <div class="invalid-feedback">Enter a valid e-mail address.</div>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <div class="form-check">
+            <input
+              id="smtp-tls"
+              type="checkbox"
+              class="form-check-input"
+              formControlName="use_tls"
+            />
+            <label class="form-check-label" for="smtp-tls">Use TLS</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" formGroupName="timing">
+    <div class="card-header">Timing</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label" for="t-interval">Check interval (s)</label>
+          <input
+            id="t-interval"
+            type="number"
+            class="form-control"
+            formControlName="check_interval_in_seconds"
+            [class.is-invalid]="invalid('timing.check_interval_in_seconds')"
+          />
+          <div class="invalid-feedback">Enter a positive integer.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="t-timeout">Check timeout (s)</label>
+          <input
+            id="t-timeout"
+            type="number"
+            class="form-control"
+            formControlName="check_timeout_in_seconds"
+            [class.is-invalid]="invalid('timing.check_timeout_in_seconds')"
+          />
+          <div class="invalid-feedback">Enter a positive integer.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="t-notif">Notification interval (s)</label>
+          <input
+            id="t-notif"
+            type="number"
+            class="form-control"
+            formControlName="notification_interval_in_seconds"
+            [class.is-invalid]="invalid('timing.notification_interval_in_seconds')"
+          />
+          <div class="invalid-feedback">Enter a positive integer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4" formGroupName="concurrency">
+    <div class="card-header">Concurrency</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label" for="c-workers">Check workers</label>
+          <input
+            id="c-workers"
+            type="number"
+            class="form-control"
+            formControlName="check_workers"
+            [class.is-invalid]="invalid('concurrency.check_workers')"
+          />
+          <div class="invalid-feedback">Enter a positive integer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="reset()">Reset</button>
+  </div>
+</form>
