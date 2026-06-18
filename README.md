@@ -1,27 +1,151 @@
-# ClientAvailabilityMonitor
+**client-availability-monitor (CAM)** é a interface web (SPA) do **Availability Monitor**: um painel para editar, validar e exportar os quatro arquivos de configuração consumidos pelo motor de monitoramento em Python (**SAM**, `server-availability-monitor`) — tudo **100% local, em memória, sem backend**.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-## Development server
+## 🧭 Visão Geral
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+O CAM substitui a edição manual dos arquivos do SAM por uma interface dividida em quatro abas:
 
-## Code scaffolding
+| Aba                | Arquivo               | Função                                           |
+| ------------------ | --------------------- | ------------------------------------------------ |
+| **Monitor Config** | `monitor_config.json` | Formulário de SMTP, _timings_ e concorrência     |
+| **Users**          | `users_info.json`     | CRUD dos destinatários das notificações          |
+| **Servers**        | `servers_pool.json`   | CRUD dos servidores monitoráveis (IP **ou** DNS) |
+| **Monitor List**   | `monitor_list.txt`    | Seleção, por _checkbox_, dos servidores ativos   |
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Os dados vivem **inteiramente em memória** (sem API, sem banco, sem `localStorage`), inicializados com valores de exemplo. O fluxo de trabalho é:
 
-## Build
+1. **Importar** (opcional) — o botão **Import** na barra superior carrega arquivos existentes (`.json` / `.txt`) para o estado da aplicação.
+2. **Editar e validar** — cada aba valida os dados (campos obrigatórios, e-mail, IPv4, faixa de portas) e impede o salvamento de dados inválidos.
+3. **Exportar** — o botão **Export all** baixa os quatro arquivos atualizados, prontos para a pasta do SAM.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🛠️ Instalação e Execução
 
-## Running unit tests
+O projeto foi desenvolvido com **Angular 18** sobre **Node.js**. Os passos abaixo assumem uma máquina com o ambiente ainda não preparado.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 1️⃣ Instalar o Node.js
 
-## Running end-to-end tests
+O Angular 18 exige **Node.js ≥ 18.19** — recomenda-se o **Node 22 LTS**. Verifique se já há uma versão compatível:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+node -v
+```
 
-## Further help
+Caso não possua (ou esteja abaixo de `18.19`), instale o **Node 22 LTS** seguindo a documentação oficial e **retorne a este README** em seguida:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Download e instalação: https://nodejs.org/en/download
+
+> O ambiente de desenvolvimento usou Node 24.14.1 (também funcional), mas o Node 22 LTS é a versão recomendada por estar na matriz de suporte oficial do Angular 18.
+
+### 2️⃣ Instalar o Angular CLI 18
+
+Com o Node instalado, instale o Angular CLI na versão 18, globalmente:
+
+```bash
+npm install -g @angular/cli@18
+```
+
+Confirme a instalação (deve apontar Angular CLI `18.x`):
+
+```bash
+ng version
+```
+
+- Referência oficial de instalação: https://angular.dev/installation
+
+### 3️⃣ Instalar as dependências do projeto
+
+Na raiz do projeto (`client-availability-monitor/`):
+
+```bash
+npm install
+```
+
+Isso restaura todas as dependências declaradas no `package.json` (incluindo o Bootstrap).
+
+### 4️⃣ Executar
+
+Servidor de desenvolvimento (recarrega ao salvar os arquivos-fonte):
+
+```bash
+ng serve
+```
+
+Acesse `http://localhost:4200/`.
+
+Build de produção (artefatos gerados em `dist/`):
+
+```bash
+ng build
+```
+
+## 📄 Arquivos Gerenciados
+
+O CAM lê e escreve os mesmos quatro artefatos consumidos pelo SAM. As tabelas de campos autoritativas estão no [README do servidor](../server-availability-monitor/README.md); abaixo, um resumo do que é cada um e onde é editado:
+
+- **`monitor_config.json`** — configuração central: bloco `smtp` (`host`, `port`, `username`, `password`, `use_tls`, `from_address`), `timing` (intervalos e _timeout_ em segundos) e `concurrency` (`check_workers`). Editado na aba **Monitor Config**. O bloco `paths` é preservado com os valores canônicos.
+- **`servers_pool.json`** — lista de servidores monitoráveis; cada entrada tem `hostname`, `port` e **exatamente um** entre `ip` (IPv4) ou `dns`. Editado na aba **Servers**.
+- **`users_info.json`** — destinatários das notificações por e-mail (`username`, `email`). Editado na aba **Users**.
+- **`monitor_list.txt`** — um `hostname` por linha; define quais servidores do `servers_pool.json` estão ativamente monitorados. Montado via _checkboxes_ na aba **Monitor List**.
+
+## 🧪 Cobertura de Testes
+
+A suíte cobre a **lógica pura** dos validadores reutilizáveis (`integer`, `port`, `email`, `ipv4`, `exactlyOneOf`), em `src/app/validators/app-validators.spec.ts`, seguindo o padrão _arrange / act / assert_.
+
+```bash
+ng test
+```
+
+> Os testes rodam via **Karma + Jasmine** e exigem um navegador **Chrome/Chromium** instalado.
+
+## 🗂️ Estruturação
+
+```
+client-availability-monitor/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── header/            # Navbar + ações globais (Import / Export all)
+│   │   │   ├── monitor-config/    # Formulário reativo de monitor_config.json
+│   │   │   ├── users-info/        # CRUD de users_info.json
+│   │   │   ├── servers-pool/      # CRUD de servers_pool.json
+│   │   │   └── monitor-list/      # Seleção (checkboxes) de monitor_list.txt
+│   │   ├── services/
+│   │   │   ├── storage.service.ts # Estado em memória (BehaviorSubject por artefato)
+│   │   │   └── export.service.ts  # Import (dispatch por nome) e export (download)
+│   │   ├── models/                # Interfaces em snake_case espelhando o backend
+│   │   ├── validators/            # Validadores puros + testes
+│   │   ├── app.module.ts
+│   │   └── app-routing.module.ts
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.css
+├── angular.json
+└── package.json
+```
+
+### 📁 `components/`
+
+Uma aba por componente (todos declarados em `app.module.ts`, sem _standalone_). O `header` concentra a navegação e as ações globais de importação/exportação.
+
+### 📁 `services/`
+
+- **`storage.service.ts`** — fonte única de verdade em memória: um `BehaviorSubject` por artefato, exposto como observable (`x$`), _getter_ síncrono e _setter_. Semeado com dados de exemplo.
+- **`export.service.ts`** — exporta cada artefato como `Blob` para download (JSON formatado / texto) e importa arquivos via _dispatch_ declarativo por nome (`FILENAMES` → _reader_), sem adivinhar formato.
+
+### 📁 `models/`
+
+Interfaces TypeScript em `snake_case`, espelhando exatamente a estrutura dos JSONs do SAM (ex.: `Server` com `ip` **xor** `dns`).
+
+### 📁 `validators/`
+
+Funções puras de validação (`integer`, `port`, `email`, `ipv4`, `exactlyOneOf`) reutilizadas pelos formulários reativos, com testes unitários focados.
+
+## 📚 Referências
+
+- Download Node.js. Node.js, disponível em: nodejs.org/en/download.
+- Installation. Angular, disponível em: angular.dev/installation.
+- Get started with Bootstrap. Bootstrap, disponível em: getbootstrap.com/docs/5.3/getting-started/introduction/.
+- Angular Project Structure Guide: Small, Medium, and Large Projects. Medium, disponível em: medium.com/@dragos.atanasoae_62577/angular-project-structure-guide-small-medium-and-large-projects-e17c361b2029.
