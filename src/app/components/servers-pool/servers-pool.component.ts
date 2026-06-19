@@ -31,15 +31,28 @@ export class ServersPoolComponent implements OnInit {
     );
   }
 
-  invalid(control: string): boolean {
-    const target = this.form.get(control);
-    return !!target && target.invalid && target.touched;
+  getHostnameLabel(server: Server): 'IP' | 'DNS' {
+    const hasIp = !!server.ip;
+    return hasIp ? 'IP' : 'DNS';
   }
 
-  get addressInvalid(): boolean {
+  getHostnameValue(server: Server): string {
+    return server.ip || server.dns || '';
+  }
+
+  get isEditing(): boolean {
+    return this.editingIndex !== null;
+  }
+
+  get isAddressInvalid(): boolean {
     const ip = this.form.get('ip')!;
     const dns = this.form.get('dns')!;
     return this.form.hasError('exactlyOneOf') && (ip.touched || dns.touched);
+  }
+
+  isInvalid(control: string): boolean {
+    const target = this.form.get(control);
+    return !!target && target.invalid && target.touched;
   }
 
   edit(index: number): void {
@@ -53,13 +66,6 @@ export class ServersPoolComponent implements OnInit {
     this.editingIndex = index;
   }
 
-  remove(index: number): void {
-    this.storage.setServersPool(this.storage.serversPool.filter((_, i) => i !== index));
-    if (this.editingIndex !== null) {
-      this.cancel();
-    }
-  }
-
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -68,18 +74,13 @@ export class ServersPoolComponent implements OnInit {
 
     const raw = this.form.getRawValue();
     const server: Server = { hostname: raw.hostname, port: raw.port };
-    if (raw.ip) {
-      server.ip = raw.ip;
-    } else {
-      server.dns = raw.dns;
-    }
+    const hasIp = !!raw.ip;
+    if (hasIp) server.ip = raw.ip;
+    else server.dns = raw.dns;
 
     const servers = [...this.storage.serversPool];
-    if (this.editingIndex === null) {
-      servers.push(server);
-    } else {
-      servers[this.editingIndex] = server;
-    }
+    if (this.isEditing) servers[this.editingIndex!] = server;
+    else servers.push(server);
     this.storage.setServersPool(servers);
     this.cancel();
   }
@@ -87,5 +88,10 @@ export class ServersPoolComponent implements OnInit {
   cancel(): void {
     this.form.reset({ hostname: '', port: null, ip: '', dns: '' });
     this.editingIndex = null;
+  }
+
+  remove(index: number): void {
+    this.storage.setServersPool(this.storage.serversPool.filter((_, i) => i !== index));
+    if (this.isEditing) this.cancel();
   }
 }

@@ -12,26 +12,30 @@ function isEmpty(value: unknown): boolean {
 export function isInteger(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  return Number.isInteger(control.value) ? null : { integer: true };
+  const isValid = Number.isInteger(control.value);
+  return isValid ? null : { integer: true };
 }
 
 export function isPort(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  const value = control.value;
-  return Number.isInteger(value) && value >= MIN_PORT && value <= MAX_PORT ? null : { port: true };
+  const { value } = control;
+  const isValid = Number.isInteger(value) && value >= MIN_PORT && value <= MAX_PORT;
+  return isValid ? null : { port: true };
 }
 
 export function isEmail(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  return EMAIL_PATTERN.test(control.value) ? null : { email: true };
+  const isValid = EMAIL_PATTERN.test(control.value);
+  return isValid ? null : { email: true };
 }
 
 export function isIpv4(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  return IPV4_PATTERN.test(control.value) ? null : { ipv4: true };
+  const isValid = IPV4_PATTERN.test(control.value);
+  return isValid ? null : { ipv4: true };
 }
 
 export function isExactlyOneOf(keys: string[]): ValidatorFn {

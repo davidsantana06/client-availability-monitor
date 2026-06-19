@@ -1,7 +1,7 @@
 <h1 class="h3 mb-3">Servers</h1>
 
 <div class="card mb-4">
-  <div class="card-header">{{ editingIndex === null ? 'Add server' : 'Edit server' }}</div>
+  <div class="card-header">{{ isEditing ? 'Edit server' : 'Add server' }}</div>
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="row g-3">
@@ -12,7 +12,7 @@
             type="text"
             class="form-control"
             formControlName="hostname"
-            [class.is-invalid]="invalid('hostname')"
+            [class.is-invalid]="isInvalid('hostname')"
           />
           <div class="invalid-feedback">Hostname is required.</div>
         </div>
@@ -23,7 +23,7 @@
             type="number"
             class="form-control"
             formControlName="port"
-            [class.is-invalid]="invalid('port')"
+            [class.is-invalid]="isInvalid('port')"
           />
           <div class="invalid-feedback">Enter a valid port (1–65535).</div>
         </div>
@@ -34,7 +34,7 @@
             type="text"
             class="form-control"
             formControlName="ip"
-            [class.is-invalid]="invalid('ip') || addressInvalid"
+            [class.is-invalid]="isInvalid('ip') || isAddressInvalid"
           />
           <div class="invalid-feedback">Enter a valid IPv4 address.</div>
         </div>
@@ -45,19 +45,19 @@
             type="text"
             class="form-control"
             formControlName="dns"
-            [class.is-invalid]="addressInvalid"
+            [class.is-invalid]="isAddressInvalid"
           />
         </div>
       </div>
-      <div *ngIf="addressInvalid" class="text-danger small mt-2">
+      <div *ngIf="isAddressInvalid" class="text-danger small mt-2">
         Provide exactly one of IP or DNS.
       </div>
       <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">
-          {{ editingIndex === null ? 'Add' : 'Update' }}
+          {{ isEditing ? 'Update' : 'Add' }}
         </button>
         <button
-          *ngIf="editingIndex !== null"
+          *ngIf="isEditing"
           type="button"
           class="btn btn-outline-secondary"
           (click)="cancel()"
@@ -82,8 +82,8 @@
     <tr *ngFor="let server of servers; let i = index">
       <td>{{ server.hostname }}</td>
       <td>
-        <span class="badge text-bg-secondary me-1">{{ server.ip ? 'IP' : 'DNS' }}</span>
-        {{ server.ip || server.dns }}
+        <span class="badge text-bg-secondary me-1">{{ getHostnameLabel(server) }}</span>
+        {{ getHostnameValue(server) }}
       </td>
       <td>{{ server.port }}</td>
       <td class="text-end">

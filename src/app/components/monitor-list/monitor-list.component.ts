@@ -43,12 +43,13 @@ export class MonitorListComponent {
   toggle(hostname: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     const current = this.storage.monitorList;
-    if (checked) {
-      if (!current.includes(hostname)) {
-        this.storage.setMonitorList([...current, hostname]);
-      }
-    } else {
+
+    if (!checked) {
       this.storage.setMonitorList(current.filter((entry) => entry !== hostname));
+      return;
     }
+
+    const alreadyExists = current.includes(hostname);
+    if (!alreadyExists) this.storage.setMonitorList([...current, hostname]);
   }
 }

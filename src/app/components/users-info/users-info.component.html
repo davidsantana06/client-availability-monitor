@@ -1,7 +1,7 @@
 <h1 class="h3 mb-3">Users</h1>
 
 <div class="card mb-4">
-  <div class="card-header">{{ editingIndex === null ? 'Add user' : 'Edit user' }}</div>
+  <div class="card-header">{{ isEditing ? 'Edit user' : 'Add user' }}</div>
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="row g-3">
@@ -12,7 +12,7 @@
             type="text"
             class="form-control"
             formControlName="username"
-            [class.is-invalid]="invalid('username')"
+            [class.is-invalid]="isInvalid('username')"
           />
           <div class="invalid-feedback">Username is required.</div>
         </div>
@@ -23,16 +23,16 @@
             type="email"
             class="form-control"
             formControlName="email"
-            [class.is-invalid]="invalid('email')"
+            [class.is-invalid]="isInvalid('email')"
           />
           <div class="invalid-feedback">Enter a valid e-mail address.</div>
         </div>
         <div class="col-md-2 d-flex align-items-end gap-2">
           <button type="submit" class="btn btn-primary">
-            {{ editingIndex === null ? 'Add' : 'Update' }}
+            {{ isEditing ? 'Update' : 'Add' }}
           </button>
           <button
-            *ngIf="editingIndex !== null"
+            *ngIf="isEditing"
             type="button"
             class="btn btn-outline-secondary"
             (click)="cancel()"

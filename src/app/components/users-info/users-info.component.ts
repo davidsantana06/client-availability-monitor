@@ -26,7 +26,11 @@ export class UsersInfoComponent implements OnInit {
     });
   }
 
-  invalid(control: string): boolean {
+  get isEditing(): boolean {
+    return this.editingIndex !== null;
+  }
+
+  isInvalid(control: string): boolean {
     const target = this.form.get(control);
     return !!target && target.invalid && target.touched;
   }
@@ -37,13 +41,6 @@ export class UsersInfoComponent implements OnInit {
     this.editingIndex = index;
   }
 
-  remove(index: number): void {
-    this.storage.setUsersInfo(this.storage.usersInfo.filter((_, i) => i !== index));
-    if (this.editingIndex !== null) {
-      this.cancel();
-    }
-  }
-
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -52,11 +49,8 @@ export class UsersInfoComponent implements OnInit {
 
     const user: User = this.form.getRawValue();
     const users = [...this.storage.usersInfo];
-    if (this.editingIndex === null) {
-      users.push(user);
-    } else {
-      users[this.editingIndex] = user;
-    }
+    if (this.isEditing) users[this.editingIndex!] = user;
+    else users.push(user);
     this.storage.setUsersInfo(users);
     this.cancel();
   }
@@ -64,5 +58,10 @@ export class UsersInfoComponent implements OnInit {
   cancel(): void {
     this.form.reset({ username: '', email: '' });
     this.editingIndex = null;
+  }
+
+  remove(index: number): void {
+    this.storage.setUsersInfo(this.storage.usersInfo.filter((_, i) => i !== index));
+    if (this.isEditing) this.cancel();
   }
 }

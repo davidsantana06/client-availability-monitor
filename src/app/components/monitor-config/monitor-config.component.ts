@@ -59,7 +59,7 @@ export class MonitorConfigComponent implements OnInit {
     });
   }
 
-  invalid(path: string): boolean {
+  isInvalid(path: string): boolean {
     const control = this.form.get(path);
     return !!control && control.invalid && control.touched;
   }
