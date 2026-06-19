@@ -20,7 +20,7 @@ export interface ImportResult {
 
 export interface ImportMessage {
   type: 'success' | 'danger';
-  text: string;
+  lines: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -72,13 +72,12 @@ export class ExportService {
   }
 
   summarizeImport(result: ImportResult): ImportMessage {
-    const parts: string[] = [];
-    if (result.loaded.length) parts.push(`Loaded: ${result.loaded.join(', ')}`);
-    if (result.unknown.length)
-      parts.push(`Ignored (unknown filename): ${result.unknown.join(', ')}`);
-    if (result.failed.length) parts.push(`Failed to parse: ${result.failed.join(', ')}`);
+    const lines: string[] = [];
+    if (result.loaded.length) lines.push(`Imported: ${result.loaded.join(', ')}`);
+    if (result.failed.length) lines.push(`Failed to parse: ${result.failed.join(', ')}`);
+    if (result.unknown.length) lines.push(`Ignored (unknown name): ${result.unknown.join(', ')}`);
     const hasFailures = result.failed.length > 0;
-    return { type: hasFailures ? 'danger' : 'success', text: parts.join(' · ') };
+    return { type: hasFailures ? 'danger' : 'success', lines };
   }
 
   private async importFile(file: File): Promise<boolean> {

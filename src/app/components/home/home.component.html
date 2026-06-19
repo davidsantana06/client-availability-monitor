@@ -13,7 +13,7 @@
     [ngClass]="'alert-' + message.type"
     role="alert"
   >
-    {{ message.text }}
+    <div *ngFor="let line of message.lines">{{ line }}</div>
     <button type="button" class="btn-close" (click)="dismiss()" aria-label="Close"></button>
   </div>
 
