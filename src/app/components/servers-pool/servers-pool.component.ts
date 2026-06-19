@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { Server, ServersPool } from '../../models/servers-pool.model';
-import { exactlyOneOf, ipv4, port } from '../../validators/app-validators';
+import { isExactlyOneOf, isIpv4, isPort } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-servers-pool',
@@ -23,11 +23,11 @@ export class ServersPoolComponent implements OnInit {
     this.form = this.fb.group(
       {
         hostname: ['', Validators.required],
-        port: [null, [Validators.required, port]],
-        ip: ['', ipv4],
+        port: [null, [Validators.required, isPort]],
+        ip: ['', isIpv4],
         dns: [''],
       },
-      { validators: exactlyOneOf(['ip', 'dns']) },
+      { validators: isExactlyOneOf(['ip', 'dns']) },
     );
   }
 

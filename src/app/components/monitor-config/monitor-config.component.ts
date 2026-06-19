@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { StorageService } from '../../services/storage.service';
-import { email, integer, port } from '../../validators/app-validators';
+import { isEmail, isInteger, isPort } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-monitor-config',
@@ -25,30 +25,30 @@ export class MonitorConfigComponent implements OnInit {
     this.form = this.fb.group({
       smtp: this.fb.group({
         host: [config.smtp.host, Validators.required],
-        port: [config.smtp.port, [Validators.required, port]],
+        port: [config.smtp.port, [Validators.required, isPort]],
         username: [config.smtp.username, Validators.required],
         password: [config.smtp.password, Validators.required],
         use_tls: [config.smtp.use_tls],
-        from_address: [config.smtp.from_address, [Validators.required, email]],
+        from_address: [config.smtp.from_address, [Validators.required, isEmail]],
       }),
       timing: this.fb.group({
         check_interval_in_seconds: [
           config.timing.check_interval_in_seconds,
-          [Validators.required, Validators.min(1), integer],
+          [Validators.required, Validators.min(1), isInteger],
         ],
         check_timeout_in_seconds: [
           config.timing.check_timeout_in_seconds,
-          [Validators.required, Validators.min(1), integer],
+          [Validators.required, Validators.min(1), isInteger],
         ],
         notification_interval_in_seconds: [
           config.timing.notification_interval_in_seconds,
-          [Validators.required, Validators.min(1), integer],
+          [Validators.required, Validators.min(1), isInteger],
         ],
       }),
       concurrency: this.fb.group({
         check_workers: [
           config.concurrency.check_workers,
-          [Validators.required, Validators.min(1), integer],
+          [Validators.required, Validators.min(1), isInteger],
         ],
       }),
     });

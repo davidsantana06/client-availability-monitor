@@ -9,33 +9,32 @@ function isEmpty(value: unknown): boolean {
   return value === null || value === undefined || value === '';
 }
 
-export function integer(control: AbstractControl): ValidationErrors | null {
+export function isInteger(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
   return Number.isInteger(control.value) ? null : { integer: true };
 }
 
-export function port(control: AbstractControl): ValidationErrors | null {
+export function isPort(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
   const value = control.value;
-  const valid = Number.isInteger(value) && value >= MIN_PORT && value <= MAX_PORT;
-  return valid ? null : { port: true };
+  return Number.isInteger(value) && value >= MIN_PORT && value <= MAX_PORT ? null : { port: true };
 }
 
-export function email(control: AbstractControl): ValidationErrors | null {
+export function isEmail(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
   return EMAIL_PATTERN.test(control.value) ? null : { email: true };
 }
 
-export function ipv4(control: AbstractControl): ValidationErrors | null {
+export function isIpv4(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
   return IPV4_PATTERN.test(control.value) ? null : { ipv4: true };
 }
 
-export function exactlyOneOf(keys: string[]): ValidatorFn {
+export function isExactlyOneOf(keys: string[]): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
     const filled = keys.filter((key) => !isEmpty(group.get(key)?.value));
     return filled.length === 1 ? null : { exactlyOneOf: true };

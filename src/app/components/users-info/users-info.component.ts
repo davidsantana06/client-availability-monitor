@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { User, UsersInfo } from '../../models/users-info.model';
-import { email } from '../../validators/app-validators';
+import { isEmail } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-users-info',
@@ -22,7 +22,7 @@ export class UsersInfoComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       username: ['', Validators.required],
-      email: ['', [Validators.required, email]],
+      email: ['', [Validators.required, isEmail]],
     });
   }
 
