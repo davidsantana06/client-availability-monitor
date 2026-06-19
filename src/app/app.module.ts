@@ -4,6 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LayoutComponent } from './components/layout/layout.component';
+import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MonitorConfigComponent } from './components/monitor-config/monitor-config.component';
 import { UsersInfoComponent } from './components/users-info/users-info.component';
@@ -13,6 +15,8 @@ import { MonitorListComponent } from './components/monitor-list/monitor-list.com
 @NgModule({
   declarations: [
     AppComponent,
+    LayoutComponent,
+    HomeComponent,
     NavbarComponent,
     MonitorConfigComponent,
     UsersInfoComponent,
