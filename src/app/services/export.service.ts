@@ -12,36 +12,76 @@ export const FILENAMES = {
   monitorList: 'monitor_list.txt',
 } as const;
 
+export interface ImportResult {
+  loaded: string[];
+  unknown: string[];
+  failed: string[];
+}
+
+export interface ImportMessage {
+  type: 'success' | 'danger';
+  text: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ExportService {
   private readonly readers: Record<string, (text: string) => void> = {
-    [FILENAMES.monitorConfig]: (text) =>
-      this.storage.setMonitorConfig(this.readJson<MonitorConfig>(text)),
-    [FILENAMES.serversPool]: (text) => this.storage.setServersPool(this.readArray<Server>(text)),
-    [FILENAMES.usersInfo]: (text) => this.storage.setUsersInfo(this.readArray<User>(text)),
-    [FILENAMES.monitorList]: (text) => this.storage.setMonitorList(this.readLines(text)),
+    [FILENAMES.monitorConfig]: (text) => this.storage.setMonitorConfig(this.readJsonObject<MonitorConfig>(text)),
+    [FILENAMES.serversPool]: (text) => this.storage.setServersPool(this.readJsonArray<Server>(text)),
+    [FILENAMES.usersInfo]: (text) => this.storage.setUsersInfo(this.readJsonArray<User>(text)),
+    [FILENAMES.monitorList]: (text) => this.storage.setMonitorList(this.readTextLines(text)),
   };
 
   constructor(private readonly storage: StorageService) {}
 
-  exportJson(filename: string, data: unknown): void {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    this.download(filename, blob);
+  exportMonitorConfig(): void {
+    this.downloadJson(FILENAMES.monitorConfig, this.storage.monitorConfig);
   }
 
-  exportText(filename: string, text: string): void {
-    const blob = new Blob([text], { type: 'text/plain' });
-    this.download(filename, blob);
+  exportServersPool(): void {
+    this.downloadJson(FILENAMES.serversPool, this.storage.serversPool);
+  }
+
+  exportUsersInfo(): void {
+    this.downloadJson(FILENAMES.usersInfo, this.storage.usersInfo);
+  }
+
+  exportMonitorList(): void {
+    const text = this.storage.monitorList.join('\n') + '\n';
+    this.downloadText(FILENAMES.monitorList, text);
   }
 
   exportAll(): void {
-    this.exportJson(FILENAMES.monitorConfig, this.storage.monitorConfig);
-    this.exportJson(FILENAMES.serversPool, this.storage.serversPool);
-    this.exportJson(FILENAMES.usersInfo, this.storage.usersInfo);
-    this.exportText(FILENAMES.monitorList, this.toMonitorListText(this.storage.monitorList));
+    this.exportMonitorConfig();
+    this.exportServersPool();
+    this.exportUsersInfo();
+    this.exportMonitorList();
   }
 
-  async importFile(file: File): Promise<boolean> {
+  async importFiles(files: File[]): Promise<ImportResult> {
+    const result: ImportResult = { loaded: [], unknown: [], failed: [] };
+    for (const file of files) {
+      try {
+        const recognized = await this.importFile(file);
+        (recognized ? result.loaded : result.unknown).push(file.name);
+      } catch {
+        result.failed.push(file.name);
+      }
+    }
+    return result;
+  }
+
+  summarizeImport(result: ImportResult): ImportMessage {
+    const parts: string[] = [];
+    if (result.loaded.length) parts.push(`Loaded: ${result.loaded.join(', ')}`);
+    if (result.unknown.length)
+      parts.push(`Ignored (unknown filename): ${result.unknown.join(', ')}`);
+    if (result.failed.length) parts.push(`Failed to parse: ${result.failed.join(', ')}`);
+    const hasFailures = result.failed.length > 0;
+    return { type: hasFailures ? 'danger' : 'success', text: parts.join(' · ') };
+  }
+
+  private async importFile(file: File): Promise<boolean> {
     const reader = this.readers[file.name];
     if (!reader) return false;
 
@@ -49,27 +89,32 @@ export class ExportService {
     return true;
   }
 
-  private readJson<T>(text: string): T {
+  private downloadJson(filename: string, data: unknown): void {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    this.download(filename, blob);
+  }
+
+  private downloadText(filename: string, text: string): void {
+    const blob = new Blob([text], { type: 'text/plain' });
+    this.download(filename, blob);
+  }
+
+  private readJsonObject<T>(text: string): T {
     return JSON.parse(text) as T;
   }
 
-  private readArray<T>(text: string): T[] {
+  private readJsonArray<T>(text: string): T[] {
     const parsed: unknown = JSON.parse(text);
-    if (!Array.isArray(parsed)) {
-      throw new Error('Expected a JSON array');
-    }
+    if (!Array.isArray(parsed)) throw new Error('Expected a JSON array');
+
     return parsed as T[];
   }
 
-  private readLines(text: string): string[] {
+  private readTextLines(text: string): string[] {
     return text
       .split('\n')
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
-  }
-
-  private toMonitorListText(hostnames: string[]): string {
-    return hostnames.join('\n') + '\n';
   }
 
   private download(filename: string, blob: Blob): void {

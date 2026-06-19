@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
+import { ExportService } from '../../services/export.service';
 import { Server, ServersPool } from '../../models/servers-pool.model';
 import { isExactlyOneOf, isIpv4, isPort } from '../../validators/app-validators';
 
@@ -14,6 +15,7 @@ import { isExactlyOneOf, isIpv4, isPort } from '../../validators/app-validators'
 export class ServersPoolComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
+  private readonly exportService = inject(ExportService);
 
   readonly servers$: Observable<ServersPool> = this.storage.serversPool$;
   form!: FormGroup;
@@ -93,5 +95,9 @@ export class ServersPoolComponent implements OnInit {
   remove(index: number): void {
     this.storage.setServersPool(this.storage.serversPool.filter((_, i) => i !== index));
     if (this.isEditing) this.cancel();
+  }
+
+  export(): void {
+    this.exportService.exportServersPool();
   }
 }

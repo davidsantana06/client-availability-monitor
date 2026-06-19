@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Observable, combineLatest, map } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
+import { ExportService } from '../../services/export.service';
 
 interface MonitorListRow {
   hostname: string;
@@ -21,6 +22,7 @@ interface MonitorListView {
 })
 export class MonitorListComponent {
   private readonly storage = inject(StorageService);
+  private readonly exportService = inject(ExportService);
 
   readonly view$: Observable<MonitorListView> = combineLatest([
     this.storage.serversPool$,
@@ -51,5 +53,9 @@ export class MonitorListComponent {
 
     const alreadyExists = current.includes(hostname);
     if (!alreadyExists) this.storage.setMonitorList([...current, hostname]);
+  }
+
+  export(): void {
+    this.exportService.exportMonitorList();
   }
 }
