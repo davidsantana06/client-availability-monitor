@@ -8,11 +8,11 @@ interface ImportMessage {
 }
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css',
 })
-export class HeaderComponent {
+export class NavbarComponent {
   private readonly exportService = inject(ExportService);
 
   message: ImportMessage | null = null;
