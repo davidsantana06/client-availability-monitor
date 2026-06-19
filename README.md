@@ -17,9 +17,9 @@ O CAM substitui a edição manual dos arquivos do SAM por uma interface dividida
 
 Os dados vivem **inteiramente em memória** (sem API, sem banco, sem `localStorage`), inicializados com valores de exemplo. O fluxo de trabalho é:
 
-1. **Importar** (opcional) — o botão **Import** na barra superior carrega arquivos existentes (`.json` / `.txt`) para o estado da aplicação.
+1. **Começar** — a página inicial apresenta o CAM e oferece duas portas: **importar** arquivos existentes (`.json` / `.txt`) ou **começar com os dados de exemplo**. A importação também fica disponível a qualquer momento pelo botão **Import** da navbar.
 2. **Editar e validar** — cada aba valida os dados (campos obrigatórios, e-mail, IPv4, faixa de portas) e impede o salvamento de dados inválidos.
-3. **Exportar** — o botão **Export all** baixa os quatro arquivos atualizados, prontos para a pasta do SAM.
+3. **Exportar** — o botão **Export** de cada aba baixa apenas aquele arquivo; o **Export all** na navbar baixa os quatro de uma vez, prontos para a pasta do SAM.
 
 ## 🛠️ Instalação e Execução
 
@@ -92,7 +92,7 @@ O CAM lê e escreve os mesmos quatro artefatos consumidos pelo SAM. As tabelas d
 
 ## 🧪 Cobertura de Testes
 
-A suíte cobre a **lógica pura** dos validadores reutilizáveis (`integer`, `port`, `email`, `ipv4`, `exactlyOneOf`), em `src/app/validators/app-validators.spec.ts`, seguindo o padrão _arrange / act / assert_.
+A suíte cobre a **lógica pura** dos validadores reutilizáveis (`isInteger`, `isPort`, `isEmail`, `isIpv4`, `isExactlyOneOf`), em `src/app/validators/app-validators.spec.ts`, seguindo o padrão _arrange / act / assert_.
 
 ```bash
 ng test
@@ -107,14 +107,16 @@ client-availability-monitor/
 ├── src/
 │   ├── app/
 │   │   ├── components/
-│   │   │   ├── header/            # Navbar + ações globais (Import / Export all)
+│   │   │   ├── home/              # Landing: apresentação + Import / dados de exemplo
+│   │   │   ├── layout/            # Navbar + <router-outlet> das abas
+│   │   │   ├── navbar/            # Navegação + ações globais (Import / Export all)
 │   │   │   ├── monitor-config/    # Formulário reativo de monitor_config.json
 │   │   │   ├── users-info/        # CRUD de users_info.json
 │   │   │   ├── servers-pool/      # CRUD de servers_pool.json
 │   │   │   └── monitor-list/      # Seleção (checkboxes) de monitor_list.txt
 │   │   ├── services/
 │   │   │   ├── storage.service.ts # Estado em memória (BehaviorSubject por artefato)
-│   │   │   └── export.service.ts  # Import (dispatch por nome) e export (download)
+│   │   │   └── export.service.ts  # Export por artefato + orquestração de import
 │   │   ├── models/                # Interfaces em snake_case espelhando o backend
 │   │   ├── validators/            # Validadores puros + testes
 │   │   ├── app.module.ts
@@ -128,12 +130,12 @@ client-availability-monitor/
 
 ### 📁 `components/`
 
-Uma aba por componente (todos declarados em `app.module.ts`, sem _standalone_). O `header` concentra a navegação e as ações globais de importação/exportação.
+Uma aba por componente (todos declarados em `app.module.ts`, sem _standalone_). O `home` é a landing (importar ou começar com os dados de exemplo); o `layout` envolve a `navbar` e o `<router-outlet>` das abas — a navbar fica **oculta na home**. A `navbar` concentra a navegação e as ações globais **Import** / **Export all**.
 
 ### 📁 `services/`
 
 - **`storage.service.ts`** — fonte única de verdade em memória: um `BehaviorSubject` por artefato, exposto como observable (`x$`), _getter_ síncrono e _setter_. Semeado com dados de exemplo.
-- **`export.service.ts`** — exporta cada artefato como `Blob` para download (JSON formatado / texto) e importa arquivos via _dispatch_ declarativo por nome (`FILENAMES` → _reader_), sem adivinhar formato.
+- **`export.service.ts`** — API por artefato (`exportMonitorConfig`, `exportServersPool`, `exportUsersInfo`, `exportMonitorList`; `exportAll` compõe os quatro), cada método encapsulando seu formato (JSON / texto) e baixando via `Blob`. A importação é orquestrada aqui: `importFiles` despacha cada arquivo por nome (`FILENAMES` → _reader_, sem adivinhar formato) e devolve um `ImportResult`; `summarizeImport` resume o resultado em mensagem por categoria (importados / falhas / ignorados).
 
 ### 📁 `models/`
 
@@ -141,7 +143,7 @@ Interfaces TypeScript em `snake_case`, espelhando exatamente a estrutura dos JSO
 
 ### 📁 `validators/`
 
-Funções puras de validação (`integer`, `port`, `email`, `ipv4`, `exactlyOneOf`) reutilizadas pelos formulários reativos, com testes unitários focados.
+Validadores reutilizáveis (`isInteger`, `isPort`, `isEmail`, `isIpv4`, `isExactlyOneOf`) usados pelos formulários reativos, com testes unitários focados.
 
 ## 📚 Referências
 
