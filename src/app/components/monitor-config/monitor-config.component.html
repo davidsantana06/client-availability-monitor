@@ -1,4 +1,8 @@
-<h1 class="h3 mb-3">Monitor Config</h1>
+<app-page-header
+  title="Monitor Config"
+  [artifact]="'monitorConfig'"
+  (imported)="reset()"
+></app-page-header>
 
 <div *ngIf="saved" class="alert alert-success" role="alert">Configuration saved.</div>
 <div *ngIf="failed" class="alert alert-danger" role="alert">
@@ -143,6 +147,5 @@
   <div class="d-flex gap-2">
     <button type="submit" class="btn btn-primary">Save</button>
     <button type="button" class="btn btn-outline-secondary" (click)="reset()">Reset</button>
-    <button type="button" class="btn btn-outline-primary" (click)="export()">Export</button>
   </div>
 </form>

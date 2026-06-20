@@ -1,7 +1,4 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Monitor List</h1>
-  <button type="button" class="btn btn-outline-primary" (click)="export()">Export</button>
-</div>
+<app-page-header title="Monitor List" [artifact]="'monitorList'"></app-page-header>
 
 <ng-container *ngIf="view$ | async as view">
   <p class="text-muted">

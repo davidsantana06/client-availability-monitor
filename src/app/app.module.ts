@@ -11,6 +11,7 @@ import { MonitorConfigComponent } from './components/monitor-config/monitor-conf
 import { UsersInfoComponent } from './components/users-info/users-info.component';
 import { ServersPoolComponent } from './components/servers-pool/servers-pool.component';
 import { MonitorListComponent } from './components/monitor-list/monitor-list.component';
+import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { TooltipDirective } from './directives/tooltip.directive';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
     UsersInfoComponent,
     ServersPoolComponent,
     MonitorListComponent,
+    PageHeaderComponent,
     TooltipDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],

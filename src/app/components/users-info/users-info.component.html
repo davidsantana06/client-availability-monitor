@@ -1,7 +1,4 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Users</h1>
-  <button type="button" class="btn btn-outline-primary" (click)="export()">Export</button>
-</div>
+<app-page-header title="Users" [artifact]="'usersInfo'"></app-page-header>
 
 <div class="card mb-4">
   <div class="card-header">{{ isEditing ? 'Edit user' : 'Add user' }}</div>

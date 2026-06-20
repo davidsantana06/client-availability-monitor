@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { StorageService } from '../../services/storage.service';
-import { ExportService } from '../../services/export.service';
 import { isEmail, isInteger, isPort } from '../../validators/app-validators';
 
 @Component({
@@ -14,7 +13,6 @@ import { isEmail, isInteger, isPort } from '../../validators/app-validators';
 export class MonitorConfigComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
-  private readonly exportService = inject(ExportService);
   private readonly destroyRef = inject(DestroyRef);
 
   form!: FormGroup;
@@ -89,9 +87,5 @@ export class MonitorConfigComponent implements OnInit {
     this.form.reset(this.storage.monitorConfig);
     this.saved = false;
     this.failed = false;
-  }
-
-  export(): void {
-    this.exportService.exportMonitorConfig();
   }
 }

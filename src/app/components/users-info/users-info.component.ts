@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
-import { ExportService } from '../../services/export.service';
 import { User, UsersInfo } from '../../models/users-info.model';
 import { isEmail } from '../../validators/app-validators';
 
@@ -15,7 +14,6 @@ import { isEmail } from '../../validators/app-validators';
 export class UsersInfoComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
-  private readonly exportService = inject(ExportService);
 
   readonly users$: Observable<UsersInfo> = this.storage.usersInfo$;
   form!: FormGroup;
@@ -65,9 +63,5 @@ export class UsersInfoComponent implements OnInit {
   remove(index: number): void {
     this.storage.setUsersInfo(this.storage.usersInfo.filter((_, i) => i !== index));
     if (this.isEditing) this.cancel();
-  }
-
-  export(): void {
-    this.exportService.exportUsersInfo();
   }
 }
