@@ -1,16 +1,15 @@
 import { Component, inject } from '@angular/core';
 
-import { ExportService, ImportMessage } from '../../services/export.service';
+import { AlertMessage, ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
   private readonly exportService = inject(ExportService);
 
-  message: ImportMessage | null = null;
+  message: AlertMessage | null = null;
 
   exportAll(): void {
     this.exportService.exportAll();
@@ -24,9 +23,5 @@ export class NavbarComponent {
 
     const result = await this.exportService.importFiles(files);
     this.message = this.exportService.summarizeImport(result);
-  }
-
-  dismiss(): void {
-    this.message = null;
   }
 }

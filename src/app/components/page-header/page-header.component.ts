@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 
-import { Artifact, ExportService, FILENAMES, ImportMessage } from '../../services/export.service';
+import { AlertMessage, Artifact, ExportService, FILENAMES } from '../../services/export.service';
 
 @Component({
   selector: 'app-page-header',
@@ -13,7 +13,7 @@ export class PageHeaderComponent {
   @Input() artifact!: Artifact;
   @Output() imported = new EventEmitter<void>();
 
-  message: ImportMessage | null = null;
+  message: AlertMessage | null = null;
 
   get filename(): string {
     return FILENAMES[this.artifact];
@@ -37,7 +37,8 @@ export class PageHeaderComponent {
     input.value = '';
     if (!file) return;
 
-    if (file.name !== this.filename) {
+    const hasWrongName = file.name !== this.filename;
+    if (hasWrongName) {
       this.message = { type: 'danger', lines: [`Choose a file named ${this.filename}.`] };
       return;
     }
@@ -53,9 +54,5 @@ export class PageHeaderComponent {
 
   export(): void {
     this.exportService.exportArtifact(this.artifact);
-  }
-
-  dismiss(): void {
-    this.message = null;
   }
 }

@@ -20,7 +20,7 @@ export interface ImportResult {
   failed: string[];
 }
 
-export interface ImportMessage {
+export interface AlertMessage {
   type: 'success' | 'danger';
   lines: string[];
 }
@@ -75,7 +75,7 @@ export class ExportService {
     return result;
   }
 
-  summarizeImport(result: ImportResult): ImportMessage {
+  summarizeImport(result: ImportResult): AlertMessage {
     const lines: string[] = [];
     if (result.loaded.length) lines.push(`Imported: ${result.loaded.join(', ')}`);
     if (result.failed.length) lines.push(`Failed to parse: ${result.failed.join(', ')}`);

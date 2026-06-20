@@ -12,6 +12,7 @@ import { UsersInfoComponent } from './components/users-info/users-info.component
 import { ServersPoolComponent } from './components/servers-pool/servers-pool.component';
 import { MonitorListComponent } from './components/monitor-list/monitor-list.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
+import { AlertComponent } from './components/alert/alert.component';
 import { TooltipDirective } from './directives/tooltip.directive';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
     ServersPoolComponent,
     MonitorListComponent,
     PageHeaderComponent,
+    AlertComponent,
     TooltipDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],

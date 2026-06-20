@@ -1,0 +1,9 @@
+<div
+  *ngIf="message"
+  class="alert alert-dismissible"
+  [ngClass]="'alert-' + message.type"
+  role="alert"
+>
+  <div *ngFor="let line of message.lines">{{ line }}</div>
+  <button type="button" class="btn-close" (click)="dismissed.emit()" aria-label="Close"></button>
+</div>
