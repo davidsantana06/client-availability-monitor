@@ -12,7 +12,7 @@
             type="text"
             class="form-control"
             formControlName="hostname"
-            [class.is-invalid]="isInvalid('hostname')"
+            [class.is-invalid]="hasError(form,'hostname')"
           />
           <div class="invalid-feedback">
             <span *ngIf="form.get('hostname')?.hasError('required')">Hostname is required.</span>
@@ -28,7 +28,7 @@
             type="number"
             class="form-control"
             formControlName="port"
-            [class.is-invalid]="isInvalid('port')"
+            [class.is-invalid]="hasError(form,'port')"
           />
           <div class="invalid-feedback">Enter a valid port (1–65535).</div>
         </div>
@@ -39,7 +39,7 @@
             type="text"
             class="form-control"
             formControlName="ip"
-            [class.is-invalid]="isInvalid('ip') || isAddressInvalid"
+            [class.is-invalid]="hasError(form,'ip') || isAddressInvalid"
           />
           <div class="invalid-feedback">Enter a valid IPv4 address.</div>
         </div>
@@ -87,8 +87,8 @@
     <tr *ngFor="let server of servers; let i = index">
       <td>{{ server.hostname }}</td>
       <td>
-        <span class="badge text-bg-secondary me-1">{{ getHostnameLabel(server) }}</span>
-        {{ getHostnameValue(server) }}
+        <span class="badge text-bg-secondary me-1">{{ addressType(server) }}</span>
+        {{ address(server) }}
       </td>
       <td>{{ server.port }}</td>
       <td class="text-end">

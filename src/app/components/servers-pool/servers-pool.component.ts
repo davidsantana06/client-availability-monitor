@@ -4,18 +4,18 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { Server, ServersPool } from '../../models/servers-pool.model';
-import { isExactlyOneOf, isIpv4, isPort, isUniqueIn } from '../../validators/app-validators';
+import { hasError, isExactlyOneOf, isIpv4, isPort, isUniqueIn } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-servers-pool',
   templateUrl: './servers-pool.component.html',
-  styleUrl: './servers-pool.component.css',
 })
 export class ServersPoolComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
 
   readonly servers$: Observable<ServersPool> = this.storage.serversPool$;
+  readonly hasError = hasError;
   form!: FormGroup;
   editingIndex: number | null = null;
 
@@ -31,23 +31,8 @@ export class ServersPoolComponent implements OnInit {
     );
   }
 
-  getHostnameLabel(server: Server): 'IP' | 'DNS' {
-    const hasIp = !!server.ip;
-    return hasIp ? 'IP' : 'DNS';
-  }
-
-  getHostnameValue(server: Server): string {
-    return server.ip || server.dns || '';
-  }
-
   get isEditing(): boolean {
     return this.editingIndex !== null;
-  }
-
-  private otherHostnames(): string[] {
-    return this.storage.serversPool
-      .filter((_, index) => index !== this.editingIndex)
-      .map((server) => server.hostname);
   }
 
   get isAddressInvalid(): boolean {
@@ -56,9 +41,13 @@ export class ServersPoolComponent implements OnInit {
     return this.form.hasError('exactlyOneOf') && (ip.touched || dns.touched);
   }
 
-  isInvalid(control: string): boolean {
-    const target = this.form.get(control);
-    return !!target && target.invalid && target.touched;
+  addressType(server: Server): 'IP' | 'DNS' {
+    const hasIp = !!server.ip;
+    return hasIp ? 'IP' : 'DNS';
+  }
+
+  address(server: Server): string {
+    return server.ip || server.dns || '';
   }
 
   edit(index: number): void {
@@ -97,5 +86,11 @@ export class ServersPoolComponent implements OnInit {
   remove(index: number): void {
     this.storage.removeServer(index);
     if (this.isEditing) this.cancel();
+  }
+
+  private otherHostnames(): string[] {
+    return this.storage.serversPool
+      .filter((_, index) => index !== this.editingIndex)
+      .map((server) => server.hostname);
   }
 }
