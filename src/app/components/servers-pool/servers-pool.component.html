@@ -14,7 +14,12 @@
             formControlName="hostname"
             [class.is-invalid]="isInvalid('hostname')"
           />
-          <div class="invalid-feedback">Hostname is required.</div>
+          <div class="invalid-feedback">
+            <span *ngIf="form.get('hostname')?.hasError('required')">Hostname is required.</span>
+            <span *ngIf="form.get('hostname')?.hasError('notUnique')">
+              This hostname is already in use.
+            </span>
+          </div>
         </div>
         <div class="col-md-2">
           <label class="form-label" for="s-port">Port</label>

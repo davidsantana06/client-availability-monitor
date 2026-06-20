@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { Server, ServersPool } from '../../models/servers-pool.model';
-import { isExactlyOneOf, isIpv4, isPort } from '../../validators/app-validators';
+import { isExactlyOneOf, isIpv4, isPort, isUniqueIn } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-servers-pool',
@@ -22,7 +22,7 @@ export class ServersPoolComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group(
       {
-        hostname: ['', Validators.required],
+        hostname: ['', [Validators.required, isUniqueIn(() => this.otherHostnames())]],
         port: [null, [Validators.required, isPort]],
         ip: ['', isIpv4],
         dns: [''],
@@ -42,6 +42,12 @@ export class ServersPoolComponent implements OnInit {
 
   get isEditing(): boolean {
     return this.editingIndex !== null;
+  }
+
+  private otherHostnames(): string[] {
+    return this.storage.serversPool
+      .filter((_, index) => index !== this.editingIndex)
+      .map((server) => server.hostname);
   }
 
   get isAddressInvalid(): boolean {
@@ -73,15 +79,13 @@ export class ServersPoolComponent implements OnInit {
     }
 
     const raw = this.form.getRawValue();
-    const server: Server = { hostname: raw.hostname, port: raw.port };
+    const server: Server = { hostname: raw.hostname.trim(), port: raw.port };
     const hasIp = !!raw.ip;
     if (hasIp) server.ip = raw.ip;
     else server.dns = raw.dns;
 
-    const servers = [...this.storage.serversPool];
-    if (this.isEditing) servers[this.editingIndex!] = server;
-    else servers.push(server);
-    this.storage.setServersPool(servers);
+    if (this.isEditing) this.storage.updateServer(this.editingIndex!, server);
+    else this.storage.addServer(server);
     this.cancel();
   }
 
@@ -91,7 +95,7 @@ export class ServersPoolComponent implements OnInit {
   }
 
   remove(index: number): void {
-    this.storage.setServersPool(this.storage.serversPool.filter((_, i) => i !== index));
+    this.storage.removeServer(index);
     if (this.isEditing) this.cancel();
   }
 }
