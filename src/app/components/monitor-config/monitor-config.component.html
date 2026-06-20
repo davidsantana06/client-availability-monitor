@@ -21,7 +21,7 @@
             type="text"
             class="form-control"
             formControlName="host"
-            [class.is-invalid]="isInvalid('smtp.host')"
+            [class.is-invalid]="hasError(form,'smtp.host')"
           />
           <div class="invalid-feedback">Host is required.</div>
         </div>
@@ -32,7 +32,7 @@
             type="number"
             class="form-control"
             formControlName="port"
-            [class.is-invalid]="isInvalid('smtp.port')"
+            [class.is-invalid]="hasError(form,'smtp.port')"
           />
           <div class="invalid-feedback">Enter a valid port (1–65535).</div>
         </div>
@@ -43,7 +43,7 @@
             type="text"
             class="form-control"
             formControlName="username"
-            [class.is-invalid]="isInvalid('smtp.username')"
+            [class.is-invalid]="hasError(form,'smtp.username')"
           />
           <div class="invalid-feedback">Username is required.</div>
         </div>
@@ -54,7 +54,7 @@
             type="password"
             class="form-control"
             formControlName="password"
-            [class.is-invalid]="isInvalid('smtp.password')"
+            [class.is-invalid]="hasError(form,'smtp.password')"
           />
           <div class="invalid-feedback">Password is required.</div>
         </div>
@@ -65,7 +65,7 @@
             type="email"
             class="form-control"
             formControlName="from_address"
-            [class.is-invalid]="isInvalid('smtp.from_address')"
+            [class.is-invalid]="hasError(form,'smtp.from_address')"
           />
           <div class="invalid-feedback">Enter a valid e-mail address.</div>
         </div>
@@ -95,7 +95,7 @@
             type="number"
             class="form-control"
             formControlName="check_interval_in_seconds"
-            [class.is-invalid]="isInvalid('timing.check_interval_in_seconds')"
+            [class.is-invalid]="hasError(form,'timing.check_interval_in_seconds')"
           />
           <div class="invalid-feedback">Enter a positive integer.</div>
         </div>
@@ -106,7 +106,7 @@
             type="number"
             class="form-control"
             formControlName="check_timeout_in_seconds"
-            [class.is-invalid]="isInvalid('timing.check_timeout_in_seconds')"
+            [class.is-invalid]="hasError(form,'timing.check_timeout_in_seconds')"
           />
           <div class="invalid-feedback">Enter a positive integer.</div>
         </div>
@@ -117,7 +117,7 @@
             type="number"
             class="form-control"
             formControlName="notification_interval_in_seconds"
-            [class.is-invalid]="isInvalid('timing.notification_interval_in_seconds')"
+            [class.is-invalid]="hasError(form,'timing.notification_interval_in_seconds')"
           />
           <div class="invalid-feedback">Enter a positive integer.</div>
         </div>
@@ -136,7 +136,7 @@
             type="number"
             class="form-control"
             formControlName="check_workers"
-            [class.is-invalid]="isInvalid('concurrency.check_workers')"
+            [class.is-invalid]="hasError(form,'concurrency.check_workers')"
           />
           <div class="invalid-feedback">Enter a positive integer.</div>
         </div>

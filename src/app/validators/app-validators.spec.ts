@@ -1,6 +1,14 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { isEmail, isExactlyOneOf, isInteger, isIpv4, isPort, isUniqueIn } from './app-validators';
+import {
+  hasError,
+  isEmail,
+  isExactlyOneOf,
+  isInteger,
+  isIpv4,
+  isPort,
+  isUniqueIn,
+} from './app-validators';
 
 describe('app-validators', () => {
   describe('isInteger', () => {
@@ -82,6 +90,29 @@ describe('app-validators', () => {
 
     it('accepts a value absent from the list', () => {
       expect(validator(new FormControl('quad9'))).toBeNull();
+    });
+  });
+
+  describe('hasError', () => {
+    const form = () => new FormGroup({ name: new FormControl('', Validators.required) });
+
+    it('flags an invalid control only after it is touched', () => {
+      const group = form();
+      expect(hasError(group, 'name')).toBeFalse();
+
+      group.get('name')!.markAsTouched();
+      expect(hasError(group, 'name')).toBeTrue();
+    });
+
+    it('clears once the control becomes valid', () => {
+      const group = form();
+      group.get('name')!.markAsTouched();
+      group.get('name')!.setValue('alice');
+      expect(hasError(group, 'name')).toBeFalse();
+    });
+
+    it('is false for an unknown path', () => {
+      expect(hasError(form(), 'missing')).toBeFalse();
     });
   });
 });

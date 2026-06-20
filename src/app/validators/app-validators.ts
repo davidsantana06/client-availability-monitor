@@ -51,6 +51,11 @@ export function isUniqueIn(getExisting: () => string[]): ValidatorFn {
   };
 }
 
+export function hasError(form: AbstractControl, path: string): boolean {
+  const control = form.get(path);
+  return !!control && control.invalid && control.touched;
+}
+
 function isEmpty(value: unknown): boolean {
   return value === null || value === undefined || value === '';
 }

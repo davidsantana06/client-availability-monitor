@@ -3,18 +3,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { StorageService } from '../../services/storage.service';
-import { isEmail, isInteger, isPort } from '../../validators/app-validators';
+import { hasError, isEmail, isInteger, isPort } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-monitor-config',
   templateUrl: './monitor-config.component.html',
-  styleUrl: './monitor-config.component.css',
 })
 export class MonitorConfigComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
   private readonly destroyRef = inject(DestroyRef);
 
+  readonly hasError = hasError;
   form!: FormGroup;
   saved = false;
   failed = false;
@@ -57,11 +57,6 @@ export class MonitorConfigComponent implements OnInit {
       this.saved = false;
       this.failed = false;
     });
-  }
-
-  isInvalid(path: string): boolean {
-    const control = this.form.get(path);
-    return !!control && control.invalid && control.touched;
   }
 
   save(): void {
