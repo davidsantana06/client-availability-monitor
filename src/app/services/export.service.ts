@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { StorageService } from './storage.service';
-import { MonitorConfig } from '../models/monitor-config.model';
-import { Server } from '../models/servers-pool.model';
-import { User } from '../models/users-info.model';
+import {
+  parseMonitorConfig,
+  parseServersPool,
+  parseUsersInfo,
+} from '../validators/artifact-parsers';
 
 export const FILENAMES = {
   monitorConfig: 'monitor_config.json',
@@ -22,9 +24,9 @@ export interface AlertMessage {
 @Injectable({ providedIn: 'root' })
 export class ExportService {
   private readonly readers: Record<Artifact, (text: string) => void> = {
-    monitorConfig: (text) => this.storage.setMonitorConfig(this.readJsonObject<MonitorConfig>(text)),
-    serversPool: (text) => this.storage.setServersPool(this.readJsonArray<Server>(text)),
-    usersInfo: (text) => this.storage.setUsersInfo(this.readJsonArray<User>(text)),
+    monitorConfig: (text) => this.storage.setMonitorConfig(parseMonitorConfig(text)),
+    serversPool: (text) => this.storage.setServersPool(parseServersPool(text)),
+    usersInfo: (text) => this.storage.setUsersInfo(parseUsersInfo(text)),
     monitorList: (text) => this.storage.setMonitorList(this.readTextLines(text)),
   };
 
@@ -56,17 +58,6 @@ export class ExportService {
   private downloadText(filename: string, text: string): void {
     const blob = new Blob([text], { type: 'text/plain' });
     this.download(filename, blob);
-  }
-
-  private readJsonObject<T>(text: string): T {
-    return JSON.parse(text) as T;
-  }
-
-  private readJsonArray<T>(text: string): T[] {
-    const parsed: unknown = JSON.parse(text);
-    if (!Array.isArray(parsed)) throw new Error('Expected a JSON array');
-
-    return parsed as T[];
   }
 
   private readTextLines(text: string): string[] {

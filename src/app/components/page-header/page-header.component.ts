@@ -47,8 +47,9 @@ export class PageHeaderComponent {
       await this.exportService.importAs(this.artifact, file);
       this.message = { type: 'success', lines: [`Imported ${this.filename}.`] };
       this.imported.emit();
-    } catch {
-      this.message = { type: 'danger', lines: [`Failed to parse ${file.name}.`] };
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : `Could not import ${file.name}.`;
+      this.message = { type: 'danger', lines: [reason] };
     }
   }
 
