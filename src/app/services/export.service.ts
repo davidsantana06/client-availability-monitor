@@ -12,6 +12,8 @@ export const FILENAMES = {
   monitorList: 'monitor_list.txt',
 } as const;
 
+export type Artifact = keyof typeof FILENAMES;
+
 export interface ImportResult {
   loaded: string[];
   unknown: string[];
@@ -25,37 +27,39 @@ export interface ImportMessage {
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
-  private readonly readers: Record<string, (text: string) => void> = {
-    [FILENAMES.monitorConfig]: (text) => this.storage.setMonitorConfig(this.readJsonObject<MonitorConfig>(text)),
-    [FILENAMES.serversPool]: (text) => this.storage.setServersPool(this.readJsonArray<Server>(text)),
-    [FILENAMES.usersInfo]: (text) => this.storage.setUsersInfo(this.readJsonArray<User>(text)),
-    [FILENAMES.monitorList]: (text) => this.storage.setMonitorList(this.readTextLines(text)),
+  private readonly readers: Record<Artifact, (text: string) => void> = {
+    monitorConfig: (text) => this.storage.setMonitorConfig(this.readJsonObject<MonitorConfig>(text)),
+    serversPool: (text) => this.storage.setServersPool(this.readJsonArray<Server>(text)),
+    usersInfo: (text) => this.storage.setUsersInfo(this.readJsonArray<User>(text)),
+    monitorList: (text) => this.storage.setMonitorList(this.readTextLines(text)),
   };
+
+  private readonly exporters: Record<Artifact, () => void> = {
+    monitorConfig: () => this.downloadJson(FILENAMES.monitorConfig, this.storage.monitorConfig),
+    serversPool: () => this.downloadJson(FILENAMES.serversPool, this.storage.serversPool),
+    usersInfo: () => this.downloadJson(FILENAMES.usersInfo, this.storage.usersInfo),
+    monitorList: () => {
+      const text = this.storage.monitorList.join('\n') + '\n';
+      this.downloadText(FILENAMES.monitorList, text);
+    },
+  };
+
+  private readonly artifactByFilename = Object.fromEntries(
+    (Object.keys(FILENAMES) as Artifact[]).map((artifact) => [FILENAMES[artifact], artifact]),
+  ) as Record<string, Artifact>;
 
   constructor(private readonly storage: StorageService) {}
 
-  exportMonitorConfig(): void {
-    this.downloadJson(FILENAMES.monitorConfig, this.storage.monitorConfig);
-  }
-
-  exportServersPool(): void {
-    this.downloadJson(FILENAMES.serversPool, this.storage.serversPool);
-  }
-
-  exportUsersInfo(): void {
-    this.downloadJson(FILENAMES.usersInfo, this.storage.usersInfo);
-  }
-
-  exportMonitorList(): void {
-    const text = this.storage.monitorList.join('\n') + '\n';
-    this.downloadText(FILENAMES.monitorList, text);
+  exportArtifact(artifact: Artifact): void {
+    this.exporters[artifact]();
   }
 
   exportAll(): void {
-    this.exportMonitorConfig();
-    this.exportServersPool();
-    this.exportUsersInfo();
-    this.exportMonitorList();
+    (Object.keys(this.exporters) as Artifact[]).forEach((artifact) => this.exporters[artifact]());
+  }
+
+  async importAs(artifact: Artifact, file: File): Promise<void> {
+    this.readers[artifact](await file.text());
   }
 
   async importFiles(files: File[]): Promise<ImportResult> {
@@ -81,10 +85,10 @@ export class ExportService {
   }
 
   private async importFile(file: File): Promise<boolean> {
-    const reader = this.readers[file.name];
-    if (!reader) return false;
+    const artifact = this.artifactByFilename[file.name];
+    if (!artifact) return false;
 
-    reader(await file.text());
+    await this.importAs(artifact, file);
     return true;
   }
 
