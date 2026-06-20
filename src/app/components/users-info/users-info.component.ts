@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { User, UsersInfo } from '../../models/users-info.model';
-import { isEmail } from '../../validators/app-validators';
+import { isEmail, isUniqueIn } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-users-info',
@@ -22,12 +22,18 @@ export class UsersInfoComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       username: ['', Validators.required],
-      email: ['', [Validators.required, isEmail]],
+      email: ['', [Validators.required, isEmail, isUniqueIn(() => this.otherEmails())]],
     });
   }
 
   get isEditing(): boolean {
     return this.editingIndex !== null;
+  }
+
+  private otherEmails(): string[] {
+    return this.storage.usersInfo
+      .filter((_, index) => index !== this.editingIndex)
+      .map((user) => user.email);
   }
 
   isInvalid(control: string): boolean {
@@ -47,7 +53,8 @@ export class UsersInfoComponent implements OnInit {
       return;
     }
 
-    const user: User = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const user: User = { username: raw.username.trim(), email: raw.email.trim() };
     const users = [...this.storage.usersInfo];
     if (this.isEditing) users[this.editingIndex!] = user;
     else users.push(user);
