@@ -5,7 +5,7 @@
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="row g-3">
-        <div class="col-md-5">
+        <div class="col-md-6">
           <label class="form-label" for="u-username">Username</label>
           <input
             id="u-username"
@@ -16,7 +16,7 @@
           />
           <div class="invalid-feedback">Username is required.</div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
           <label class="form-label" for="u-email">Email</label>
           <input
             id="u-email"
@@ -27,19 +27,19 @@
           />
           <div class="invalid-feedback">Enter a valid e-mail address.</div>
         </div>
-        <div class="col-md-2 d-flex align-items-end gap-2">
-          <button type="submit" class="btn btn-primary">
-            {{ isEditing ? 'Update' : 'Add' }}
-          </button>
-          <button
-            *ngIf="isEditing"
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="cancel()"
-          >
-            Cancel
-          </button>
-        </div>
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+          {{ isEditing ? 'Update' : 'Add' }}
+        </button>
+        <button
+          *ngIf="isEditing"
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
       </div>
     </form>
   </div>
