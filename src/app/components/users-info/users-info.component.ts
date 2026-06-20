@@ -6,6 +6,11 @@ import { StorageService } from '../../services/storage.service';
 import { User, UsersInfo } from '../../models/users-info.model';
 import { hasError, isEmail, isUniqueIn } from '../../validators/app-validators';
 
+const LIMITS = {
+  usernameMaxLength: 120,
+  emailMaxLength: 254,
+} as const;
+
 @Component({
   selector: 'app-users-info',
   templateUrl: './users-info.component.html',
@@ -16,13 +21,22 @@ export class UsersInfoComponent implements OnInit {
 
   readonly users$: Observable<UsersInfo> = this.storage.usersInfo$;
   readonly hasError = hasError;
+  readonly limits = LIMITS;
   form!: FormGroup;
   editingIndex: number | null = null;
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      username: ['', Validators.required],
-      email: ['', [Validators.required, isEmail, isUniqueIn(() => this.otherEmails())]],
+      username: ['', [Validators.required, Validators.maxLength(LIMITS.usernameMaxLength)]],
+      email: [
+        '',
+        [
+          Validators.required,
+          isEmail,
+          isUniqueIn(() => this.otherEmails()),
+          Validators.maxLength(LIMITS.emailMaxLength),
+        ],
+      ],
     });
   }
 

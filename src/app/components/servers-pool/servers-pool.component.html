@@ -12,6 +12,7 @@
             type="text"
             class="form-control"
             formControlName="hostname"
+            [attr.maxlength]="limits.hostnameMaxLength"
             [class.is-invalid]="hasError(form,'hostname')"
           />
           <div class="invalid-feedback">
@@ -28,6 +29,9 @@
             type="number"
             class="form-control"
             formControlName="port"
+            [attr.min]="limits.portMinValue"
+            [attr.max]="limits.portMaxValue"
+            step="1"
             [class.is-invalid]="hasError(form,'port')"
           />
           <div class="invalid-feedback">Enter a valid port (1–65535).</div>
@@ -39,6 +43,7 @@
             type="text"
             class="form-control"
             formControlName="ip"
+            [attr.maxlength]="limits.ipMaxLength"
             [class.is-invalid]="hasError(form,'ip') || isAddressInvalid"
           />
           <div class="invalid-feedback">Enter a valid IPv4 address.</div>
@@ -50,6 +55,7 @@
             type="text"
             class="form-control"
             formControlName="dns"
+            [attr.maxlength]="limits.dnsMaxLength"
             [class.is-invalid]="isAddressInvalid"
           />
         </div>

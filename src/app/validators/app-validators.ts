@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-const MIN_PORT = 1;
-const MAX_PORT = 65535;
+export const PORT_MIN_VALUE = 1;
+export const PORT_MAX_VALUE = 65535;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IPV4_PATTERN = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
 
@@ -16,7 +16,7 @@ export function isPort(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
   const { value } = control;
-  const isValid = Number.isInteger(value) && value >= MIN_PORT && value <= MAX_PORT;
+  const isValid = Number.isInteger(value) && value >= PORT_MIN_VALUE && value <= PORT_MAX_VALUE;
   return isValid ? null : { port: true };
 }
 

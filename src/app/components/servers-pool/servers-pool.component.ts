@@ -4,7 +4,23 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { Server, ServersPool } from '../../models/servers-pool.model';
-import { hasError, isExactlyOneOf, isIpv4, isPort, isUniqueIn } from '../../validators/app-validators';
+import {
+  PORT_MAX_VALUE,
+  PORT_MIN_VALUE,
+  hasError,
+  isExactlyOneOf,
+  isIpv4,
+  isPort,
+  isUniqueIn,
+} from '../../validators/app-validators';
+
+const LIMITS = {
+  hostnameMaxLength: 253,
+  portMinValue: PORT_MIN_VALUE,
+  portMaxValue: PORT_MAX_VALUE,
+  ipMaxLength: 15,
+  dnsMaxLength: 253,
+} as const;
 
 @Component({
   selector: 'app-servers-pool',
@@ -16,16 +32,24 @@ export class ServersPoolComponent implements OnInit {
 
   readonly servers$: Observable<ServersPool> = this.storage.serversPool$;
   readonly hasError = hasError;
+  readonly limits = LIMITS;
   form!: FormGroup;
   editingIndex: number | null = null;
 
   ngOnInit(): void {
     this.form = this.fb.group(
       {
-        hostname: ['', [Validators.required, isUniqueIn(() => this.otherHostnames())]],
+        hostname: [
+          '',
+          [
+            Validators.required,
+            isUniqueIn(() => this.otherHostnames()),
+            Validators.maxLength(LIMITS.hostnameMaxLength),
+          ],
+        ],
         port: [null, [Validators.required, isPort]],
-        ip: ['', isIpv4],
-        dns: [''],
+        ip: ['', [isIpv4, Validators.maxLength(LIMITS.ipMaxLength)]],
+        dns: ['', Validators.maxLength(LIMITS.dnsMaxLength)],
       },
       { validators: isExactlyOneOf(['ip', 'dns']) },
     );
