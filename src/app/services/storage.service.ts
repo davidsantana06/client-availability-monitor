@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { MonitorConfig } from '../models/monitor-config.model';
-import { ServersPool } from '../models/servers-pool.model';
+import { Server, ServersPool } from '../models/servers-pool.model';
 import { UsersInfo } from '../models/users-info.model';
 import { MonitorList } from '../models/monitor-list.model';
 
@@ -86,5 +86,33 @@ export class StorageService {
 
   setMonitorList(value: MonitorList): void {
     this.monitorListSubject.next(value);
+  }
+
+  addServer(server: Server): void {
+    this.setServersPool([...this.serversPool, server]);
+  }
+
+  updateServer(index: number, server: Server): void {
+    const previousHostname = this.serversPool[index].hostname;
+    this.setServersPool(this.serversPool.map((item, i) => (i === index ? server : item)));
+    if (previousHostname !== server.hostname) {
+      this.renameInMonitorList(previousHostname, server.hostname);
+    }
+  }
+
+  removeServer(index: number): void {
+    const removedHostname = this.serversPool[index].hostname;
+    this.setServersPool(this.serversPool.filter((_, i) => i !== index));
+    this.removeFromMonitorList(removedHostname);
+  }
+
+  private renameInMonitorList(from: string, to: string): void {
+    if (!this.monitorList.includes(from)) return;
+    this.setMonitorList(this.monitorList.map((hostname) => (hostname === from ? to : hostname)));
+  }
+
+  private removeFromMonitorList(hostname: string): void {
+    if (!this.monitorList.includes(hostname)) return;
+    this.setMonitorList(this.monitorList.filter((entry) => entry !== hostname));
   }
 }
