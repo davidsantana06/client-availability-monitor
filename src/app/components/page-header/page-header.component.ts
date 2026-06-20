@@ -37,6 +37,11 @@ export class PageHeaderComponent {
     input.value = '';
     if (!file) return;
 
+    if (file.name !== this.filename) {
+      this.message = { type: 'danger', lines: [`Choose a file named ${this.filename}.`] };
+      return;
+    }
+
     try {
       await this.exportService.importAs(this.artifact, file);
       this.message = { type: 'success', lines: [`Imported ${this.filename}.`] };
