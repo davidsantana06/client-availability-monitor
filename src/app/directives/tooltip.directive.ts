@@ -10,7 +10,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
   private tooltip: any;
 
   ngOnInit(): void {
-    this.tooltip = new bootstrap.Tooltip(this.host, { title: this.text });
+    this.tooltip = new bootstrap.Tooltip(this.host, { title: this.text, placement: 'bottom' });
   }
 
   ngOnDestroy(): void {
