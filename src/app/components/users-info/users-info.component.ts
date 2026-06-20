@@ -4,18 +4,18 @@ import { Observable } from 'rxjs';
 
 import { StorageService } from '../../services/storage.service';
 import { User, UsersInfo } from '../../models/users-info.model';
-import { isEmail, isUniqueIn } from '../../validators/app-validators';
+import { hasError, isEmail, isUniqueIn } from '../../validators/app-validators';
 
 @Component({
   selector: 'app-users-info',
   templateUrl: './users-info.component.html',
-  styleUrl: './users-info.component.css',
 })
 export class UsersInfoComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly storage = inject(StorageService);
 
   readonly users$: Observable<UsersInfo> = this.storage.usersInfo$;
+  readonly hasError = hasError;
   form!: FormGroup;
   editingIndex: number | null = null;
 
@@ -28,17 +28,6 @@ export class UsersInfoComponent implements OnInit {
 
   get isEditing(): boolean {
     return this.editingIndex !== null;
-  }
-
-  private otherEmails(): string[] {
-    return this.storage.usersInfo
-      .filter((_, index) => index !== this.editingIndex)
-      .map((user) => user.email);
-  }
-
-  isInvalid(control: string): boolean {
-    const target = this.form.get(control);
-    return !!target && target.invalid && target.touched;
   }
 
   edit(index: number): void {
@@ -70,5 +59,11 @@ export class UsersInfoComponent implements OnInit {
   remove(index: number): void {
     this.storage.setUsersInfo(this.storage.usersInfo.filter((_, i) => i !== index));
     if (this.isEditing) this.cancel();
+  }
+
+  private otherEmails(): string[] {
+    return this.storage.usersInfo
+      .filter((_, index) => index !== this.editingIndex)
+      .map((user) => user.email);
   }
 }
