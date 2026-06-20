@@ -17,7 +17,6 @@ interface MonitorListView {
 @Component({
   selector: 'app-monitor-list',
   templateUrl: './monitor-list.component.html',
-  styleUrl: './monitor-list.component.css',
 })
 export class MonitorListComponent {
   private readonly storage = inject(StorageService);
