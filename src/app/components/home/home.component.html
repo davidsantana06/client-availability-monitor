@@ -5,45 +5,6 @@
       Edit, validate and export the configuration files consumed by the Server Availability Monitor
       — 100% in your browser. No server, no upload: your data never leaves this machine.
     </p>
-  </div>
-
-  <div
-    *ngIf="message"
-    class="alert alert-dismissible"
-    [ngClass]="'alert-' + message.type"
-    role="alert"
-  >
-    <div *ngFor="let line of message.lines">{{ line }}</div>
-    <button type="button" class="btn-close" (click)="dismiss()" aria-label="Close"></button>
-  </div>
-
-  <div class="row g-4 justify-content-center">
-    <div class="col-md-5">
-      <div class="card h-100 text-center">
-        <div class="card-body">
-          <h2 class="h5 card-title">Import existing files</h2>
-          <p class="card-text text-muted">
-            Load your current <code>monitor_config.json</code>, <code>servers_pool.json</code>,
-            <code>users_info.json</code> or <code>monitor_list.txt</code>.
-          </p>
-          <label class="btn btn-primary mb-0">
-            Choose files
-            <input type="file" multiple accept=".json,.txt" (change)="import($event)" hidden />
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-5">
-      <div class="card h-100 text-center">
-        <div class="card-body">
-          <h2 class="h5 card-title">Start with example data</h2>
-          <p class="card-text text-muted">
-            Explore the app with a ready-made sample configuration you can tweak and export.
-          </p>
-          <a class="btn btn-outline-primary" routerLink="/monitor-config">Get started</a>
-        </div>
-      </div>
-    </div>
+    <a class="btn btn-primary btn-lg mt-3" routerLink="/monitor-config">Get started</a>
   </div>
 </div>
