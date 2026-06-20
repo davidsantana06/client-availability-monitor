@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { isEmail, isExactlyOneOf, isInteger, isIpv4, isPort } from './app-validators';
+import { isEmail, isExactlyOneOf, isInteger, isIpv4, isPort, isUniqueIn } from './app-validators';
 
 describe('app-validators', () => {
   describe('isInteger', () => {
@@ -64,6 +64,24 @@ describe('app-validators', () => {
     it('rejects when none or both are filled', () => {
       expect(validator(group('', ''))).toEqual({ exactlyOneOf: true });
       expect(validator(group('8.8.8.8', 'example.com'))).toEqual({ exactlyOneOf: true });
+    });
+  });
+
+  describe('isUniqueIn', () => {
+    const validator = isUniqueIn(() => ['google-dns', 'cloudflare']);
+
+    it('treats empty as valid (delegated to required)', () => {
+      expect(validator(new FormControl(null))).toBeNull();
+      expect(validator(new FormControl(''))).toBeNull();
+    });
+
+    it('rejects a value already present, ignoring case and surrounding spaces', () => {
+      expect(validator(new FormControl('GOOGLE-DNS'))).toEqual({ notUnique: true });
+      expect(validator(new FormControl('  cloudflare  '))).toEqual({ notUnique: true });
+    });
+
+    it('accepts a value absent from the list', () => {
+      expect(validator(new FormControl('quad9'))).toBeNull();
     });
   });
 });

@@ -5,10 +5,6 @@ const MAX_PORT = 65535;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IPV4_PATTERN = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
 
-function isEmpty(value: unknown): boolean {
-  return value === null || value === undefined || value === '';
-}
-
 export function isInteger(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
@@ -43,4 +39,22 @@ export function isExactlyOneOf(keys: string[]): ValidatorFn {
     const filled = keys.filter((key) => !isEmpty(group.get(key)?.value));
     return filled.length === 1 ? null : { exactlyOneOf: true };
   };
+}
+
+export function isUniqueIn(getExisting: () => string[]): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (isEmpty(control.value)) return null;
+
+    const value = normalize(control.value);
+    const existing = getExisting().map(normalize);
+    return existing.includes(value) ? { notUnique: true } : null;
+  };
+}
+
+function isEmpty(value: unknown): boolean {
+  return value === null || value === undefined || value === '';
+}
+
+function normalize(value: unknown): string {
+  return String(value).trim().toLowerCase();
 }
