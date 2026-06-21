@@ -25,7 +25,7 @@ export abstract class ArtifactStore<T> implements ArtifactIo {
     this.set(this.parse(await file.text()));
   }
 
-  abstract parse(text: string): T;
+  protected abstract parse(text: string): T;
 
   abstract export(): void;
 }

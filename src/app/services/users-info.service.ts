@@ -22,7 +22,7 @@ export class UsersInfoService extends ArtifactStore<UsersInfo> {
     super(SEED);
   }
 
-  parse(text: string): UsersInfo {
+  protected parse(text: string): UsersInfo {
     const value = parseJson(text);
     if (!isUsersInfo(value)) throw new Error('The file is not a valid users list.');
     return value;

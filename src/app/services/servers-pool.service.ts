@@ -26,7 +26,7 @@ export class ServersPoolService extends ArtifactStore<ServersPool> {
     super(SEED);
   }
 
-  parse(text: string): ServersPool {
+  protected parse(text: string): ServersPool {
     const value = parseJson(text);
     if (!isServersPool(value)) throw new Error('The file is not a valid servers pool.');
     return value;

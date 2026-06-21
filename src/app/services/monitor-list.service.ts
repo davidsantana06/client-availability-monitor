@@ -17,7 +17,7 @@ export class MonitorListService extends ArtifactStore<MonitorList> {
     super(SEED);
   }
 
-  parse(text: string): MonitorList {
+  protected parse(text: string): MonitorList {
     return text
       .split('\n')
       .map((line) => line.trim())

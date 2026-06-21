@@ -41,7 +41,7 @@ export class MonitorConfigService extends ArtifactStore<MonitorConfig> {
     super(SEED);
   }
 
-  parse(text: string): MonitorConfig {
+  protected parse(text: string): MonitorConfig {
     const value = parseJson(text);
     if (!isMonitorConfig(value)) throw new Error('The file is not a valid monitor configuration.');
     return value;
