@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { ArtifactStore } from './base/artifact-store';
 import { ExportService } from './export.service';
 import { MonitorConfig } from '../models/monitor-config.model';
-import { parseJson } from '../validators/app-validators';
 import { isMonitorConfig } from '../validators/monitor-config.validators';
 
 const FILENAME = 'monitor_config.json';
@@ -42,8 +41,14 @@ export class MonitorConfigService extends ArtifactStore<MonitorConfig> {
   }
 
   protected parse(text: string): MonitorConfig {
-    const value = parseJson(text);
-    if (!isMonitorConfig(value)) throw new Error('The file is not a valid monitor configuration.');
+    const invalidMessage = 'The file is not a valid monitor configuration.';
+    let value: unknown;
+    try {
+      value = JSON.parse(text);
+    } catch {
+      throw new Error(invalidMessage);
+    }
+    if (!isMonitorConfig(value)) throw new Error(invalidMessage);
     return value;
   }
 

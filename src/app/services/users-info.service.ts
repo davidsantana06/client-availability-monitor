@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { ArtifactStore } from './base/artifact-store';
 import { ExportService } from './export.service';
 import { User, UsersInfo } from '../models/users-info.model';
-import { parseJson } from '../validators/app-validators';
 import { isUsersInfo } from '../validators/users-info.validators';
 
 const FILENAME = 'users_info.json';
@@ -23,8 +22,14 @@ export class UsersInfoService extends ArtifactStore<UsersInfo> {
   }
 
   protected parse(text: string): UsersInfo {
-    const value = parseJson(text);
-    if (!isUsersInfo(value)) throw new Error('The file is not a valid users list.');
+    const invalidMessage = 'The file is not a valid users list.';
+    let value: unknown;
+    try {
+      value = JSON.parse(text);
+    } catch {
+      throw new Error(invalidMessage);
+    }
+    if (!isUsersInfo(value)) throw new Error(invalidMessage);
     return value;
   }
 

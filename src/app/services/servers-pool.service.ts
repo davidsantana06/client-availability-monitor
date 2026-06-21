@@ -4,7 +4,6 @@ import { ArtifactStore } from './base/artifact-store';
 import { ExportService } from './export.service';
 import { MonitorListService } from './monitor-list.service';
 import { Server, ServersPool } from '../models/servers-pool.model';
-import { parseJson } from '../validators/app-validators';
 import { isServersPool } from '../validators/servers-pool.validators';
 
 const FILENAME = 'servers_pool.json';
@@ -27,8 +26,14 @@ export class ServersPoolService extends ArtifactStore<ServersPool> {
   }
 
   protected parse(text: string): ServersPool {
-    const value = parseJson(text);
-    if (!isServersPool(value)) throw new Error('The file is not a valid servers pool.');
+    const invalidMessage = 'The file is not a valid servers pool.';
+    let value: unknown;
+    try {
+      value = JSON.parse(text);
+    } catch {
+      throw new Error(invalidMessage);
+    }
+    if (!isServersPool(value)) throw new Error(invalidMessage);
     return value;
   }
 
