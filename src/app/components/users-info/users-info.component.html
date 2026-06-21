@@ -1,4 +1,4 @@
-<app-page-header title="Users" [io]="service"></app-page-header>
+<app-page-header title="Users" [io]="service" (imported)="cancel()"></app-page-header>
 
 <div class="card mb-4">
   <div class="card-header">{{ isEditing ? 'Edit user' : 'Add user' }}</div>
