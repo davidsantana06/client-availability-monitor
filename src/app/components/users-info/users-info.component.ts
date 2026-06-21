@@ -43,8 +43,7 @@ export class UsersInfoComponent implements OnInit {
   }
 
   edit(index: number): void {
-    const user = this.service.value[index];
-    this.form.setValue({ username: user.username, email: user.email });
+    this.fillForm(this.service.value[index]);
     this.editingIndex = index;
   }
 
@@ -61,14 +60,27 @@ export class UsersInfoComponent implements OnInit {
     this.cancel();
   }
 
+  reset(): void {
+    if (this.isEditing) this.fillForm(this.service.value[this.editingIndex!]);
+    else this.clearForm();
+  }
+
   cancel(): void {
-    this.form.reset({ username: '', email: '' });
+    this.clearForm();
     this.editingIndex = null;
   }
 
   remove(index: number): void {
     this.service.removeOne(index);
     if (this.isEditing) this.cancel();
+  }
+
+  private fillForm(user: User): void {
+    this.form.setValue({ username: user.username, email: user.email });
+  }
+
+  private clearForm(): void {
+    this.form.reset({ username: '', email: '' });
   }
 
   private otherEmails(): string[] {
