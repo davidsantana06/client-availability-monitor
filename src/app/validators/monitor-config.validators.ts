@@ -1,9 +1,9 @@
 import {
   isNonEmptyString,
-  isPositiveInteger,
+  isPositiveIntegerValue,
   isRecord,
-  isValidEmail,
-  isValidPort,
+  isEmailValue,
+  isPortValue,
 } from './app-validators';
 import { MonitorConfig } from '../models/monitor-config.model';
 
@@ -21,25 +21,25 @@ function isSmtpConfig(value: unknown): boolean {
   return (
     isRecord(value) &&
     isNonEmptyString(value['host']) &&
-    isValidPort(value['port']) &&
+    isPortValue(value['port']) &&
     isNonEmptyString(value['username']) &&
     isNonEmptyString(value['password']) &&
     typeof value['use_tls'] === 'boolean' &&
-    isValidEmail(value['from_address'])
+    isEmailValue(value['from_address'])
   );
 }
 
 function isTimingConfig(value: unknown): boolean {
   return (
     isRecord(value) &&
-    isPositiveInteger(value['check_interval_in_seconds']) &&
-    isPositiveInteger(value['check_timeout_in_seconds']) &&
-    isPositiveInteger(value['notification_interval_in_seconds'])
+    isPositiveIntegerValue(value['check_interval_in_seconds']) &&
+    isPositiveIntegerValue(value['check_timeout_in_seconds']) &&
+    isPositiveIntegerValue(value['notification_interval_in_seconds'])
   );
 }
 
 function isConcurrencyConfig(value: unknown): boolean {
-  return isRecord(value) && isPositiveInteger(value['check_workers']);
+  return isRecord(value) && isPositiveIntegerValue(value['check_workers']);
 }
 
 function isPathsConfig(value: unknown): boolean {

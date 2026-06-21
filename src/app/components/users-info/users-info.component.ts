@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersInfoService } from '../../services/users-info.service';
 import { User } from '../../models/users-info.model';
 import { ConfirmRequest } from '../confirm-dialog/confirm-dialog.component';
-import { hasError, isEmail, isUniqueIn } from '../../validators/app-validators';
+import { hasError, isEmailControl, isUniqueInControl } from '../../validators/app-validators';
 
 const LIMITS = {
   usernameMaxLength: 120,
@@ -32,8 +32,8 @@ export class UsersInfoComponent implements OnInit {
         '',
         [
           Validators.required,
-          isEmail,
-          isUniqueIn(() => this.otherEmails()),
+          isEmailControl,
+          isUniqueInControl(() => this.otherEmails()),
           Validators.maxLength(LIMITS.emailMaxLength),
         ],
       ],

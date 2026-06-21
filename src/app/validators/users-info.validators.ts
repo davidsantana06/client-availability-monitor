@@ -1,4 +1,4 @@
-import { hasUniqueValues, isNonEmptyString, isRecord, isValidEmail } from './app-validators';
+import { hasUniqueValues, isNonEmptyString, isRecord, isEmailValue } from './app-validators';
 import { User, UsersInfo } from '../models/users-info.model';
 
 export function isUsersInfo(value: unknown): value is UsersInfo {
@@ -10,5 +10,5 @@ export function isUsersInfo(value: unknown): value is UsersInfo {
 }
 
 function isUser(value: unknown): value is User {
-  return isRecord(value) && isNonEmptyString(value['username']) && isValidEmail(value['email']);
+  return isRecord(value) && isNonEmptyString(value['username']) && isEmailValue(value['email']);
 }

@@ -2,8 +2,8 @@ import {
   hasUniqueValues,
   isNonEmptyString,
   isRecord,
-  isValidIpv4,
-  isValidPort,
+  isIpv4Value,
+  isPortValue,
 } from './app-validators';
 import { Server, ServersPool } from '../models/servers-pool.model';
 
@@ -19,7 +19,7 @@ function isServer(value: unknown): value is Server {
   return (
     isRecord(value) &&
     isNonEmptyString(value['hostname']) &&
-    isValidPort(value['port']) &&
+    isPortValue(value['port']) &&
     hasExactlyOneAddress(value)
   );
 }
@@ -28,5 +28,5 @@ function hasExactlyOneAddress(value: Record<string, unknown>): boolean {
   const ipFilled = isNonEmptyString(value['ip']);
   const dnsFilled = isNonEmptyString(value['dns']);
   if (ipFilled === dnsFilled) return false;
-  return ipFilled ? isValidIpv4(value['ip']) : true;
+  return ipFilled ? isIpv4Value(value['ip']) : true;
 }

@@ -8,10 +8,10 @@ import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
   hasError,
-  isExactlyOneOf,
-  isIpv4,
-  isPort,
-  isUniqueIn,
+  isExactlyOneOfControl,
+  isIpv4Control,
+  isPortControl,
+  isUniqueInControl,
 } from '../../validators/app-validators';
 
 const LIMITS = {
@@ -43,15 +43,15 @@ export class ServersPoolComponent implements OnInit {
           '',
           [
             Validators.required,
-            isUniqueIn(() => this.otherHostnames()),
+            isUniqueInControl(() => this.otherHostnames()),
             Validators.maxLength(LIMITS.hostnameMaxLength),
           ],
         ],
-        port: [null, [Validators.required, isPort]],
-        ip: ['', [isIpv4, Validators.maxLength(LIMITS.ipMaxLength)]],
+        port: [null, [Validators.required, isPortControl]],
+        ip: ['', [isIpv4Control, Validators.maxLength(LIMITS.ipMaxLength)]],
         dns: ['', Validators.maxLength(LIMITS.dnsMaxLength)],
       },
-      { validators: isExactlyOneOf(['ip', 'dns']) },
+      { validators: isExactlyOneOfControl(['ip', 'dns']) },
     );
   }
 

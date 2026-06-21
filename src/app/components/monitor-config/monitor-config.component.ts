@@ -7,9 +7,9 @@ import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
   hasError,
-  isEmail,
-  isInteger,
-  isPort,
+  isEmailControl,
+  isIntegerControl,
+  isPortControl,
 } from '../../validators/app-validators';
 
 const LIMITS = {
@@ -48,7 +48,7 @@ export class MonitorConfigComponent implements OnInit {
     this.form = this.fb.group({
       smtp: this.fb.group({
         host: [current.smtp.host, [Validators.required, Validators.maxLength(LIMITS.hostMaxLength)]],
-        port: [current.smtp.port, [Validators.required, isPort]],
+        port: [current.smtp.port, [Validators.required, isPortControl]],
         username: [
           current.smtp.username,
           [Validators.required, Validators.maxLength(LIMITS.usernameMaxLength)],
@@ -60,7 +60,7 @@ export class MonitorConfigComponent implements OnInit {
         use_tls: [current.smtp.use_tls],
         from_address: [
           current.smtp.from_address,
-          [Validators.required, isEmail, Validators.maxLength(LIMITS.emailMaxLength)],
+          [Validators.required, isEmailControl, Validators.maxLength(LIMITS.emailMaxLength)],
         ],
       }),
       timing: this.fb.group({
@@ -70,7 +70,7 @@ export class MonitorConfigComponent implements OnInit {
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
             Validators.max(LIMITS.intervalMaxSeconds),
-            isInteger,
+            isIntegerControl,
           ],
         ],
         check_timeout_in_seconds: [
@@ -79,7 +79,7 @@ export class MonitorConfigComponent implements OnInit {
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
             Validators.max(LIMITS.timeoutMaxSeconds),
-            isInteger,
+            isIntegerControl,
           ],
         ],
         notification_interval_in_seconds: [
@@ -88,7 +88,7 @@ export class MonitorConfigComponent implements OnInit {
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
             Validators.max(LIMITS.intervalMaxSeconds),
-            isInteger,
+            isIntegerControl,
           ],
         ],
       }),
@@ -99,7 +99,7 @@ export class MonitorConfigComponent implements OnInit {
             Validators.required,
             Validators.min(LIMITS.workersMinValue),
             Validators.max(LIMITS.workersMaxValue),
-            isInteger,
+            isIntegerControl,
           ],
         ],
       }),
