@@ -1,22 +1,21 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { AlertMessage, Artifact, ExportService, FILENAMES } from '../../services/export.service';
+import { AlertMessage } from '../alert/alert.component';
+import { ArtifactIo } from '../../services/contract/artifact-io';
 
 @Component({
   selector: 'app-page-header',
   templateUrl: './page-header.component.html',
 })
 export class PageHeaderComponent {
-  private readonly exportService = inject(ExportService);
-
   @Input() title = '';
-  @Input() artifact!: Artifact;
+  @Input() io!: ArtifactIo;
   @Output() imported = new EventEmitter<void>();
 
   message: AlertMessage | null = null;
 
   get filename(): string {
-    return FILENAMES[this.artifact];
+    return this.io.filename;
   }
 
   get accept(): string {
@@ -37,14 +36,13 @@ export class PageHeaderComponent {
     input.value = '';
     if (!file) return;
 
-    const hasWrongName = file.name !== this.filename;
-    if (hasWrongName) {
+    if (file.name !== this.filename) {
       this.message = { type: 'danger', lines: [`Choose a file named ${this.filename}.`] };
       return;
     }
 
     try {
-      await this.exportService.importAs(this.artifact, file);
+      await this.io.import(file);
       this.message = { type: 'success', lines: [`Imported ${this.filename}.`] };
       this.imported.emit();
     } catch (error) {
@@ -54,6 +52,6 @@ export class PageHeaderComponent {
   }
 
   export(): void {
-    this.exportService.exportArtifact(this.artifact);
+    this.io.export();
   }
 }

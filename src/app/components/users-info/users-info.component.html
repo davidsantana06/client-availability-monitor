@@ -1,4 +1,4 @@
-<app-page-header title="Users" [artifact]="'usersInfo'"></app-page-header>
+<app-page-header title="Users" [io]="service"></app-page-header>
 
 <div class="card mb-4">
   <div class="card-header">{{ isEditing ? 'Edit user' : 'Add user' }}</div>
@@ -67,8 +67,8 @@
       <th scope="col" class="text-end">Actions</th>
     </tr>
   </thead>
-  <tbody *ngIf="users$ | async as users">
-    <tr *ngFor="let user of users; let i = index">
+  <tbody *ngIf="service.value$ | async as list">
+    <tr *ngFor="let user of list; let i = index">
       <td>{{ user.username }}</td>
       <td>{{ user.email }}</td>
       <td class="text-end">
@@ -80,7 +80,7 @@
         </button>
       </td>
     </tr>
-    <tr *ngIf="users.length === 0">
+    <tr *ngIf="list.length === 0">
       <td colspan="3" class="text-center text-muted">No users yet.</td>
     </tr>
   </tbody>

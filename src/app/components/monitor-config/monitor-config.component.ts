@@ -2,7 +2,7 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { StorageService } from '../../services/storage.service';
+import { MonitorConfigService } from '../../services/monitor-config.service';
 import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
@@ -32,7 +32,7 @@ const LIMITS = {
 })
 export class MonitorConfigComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly storage = inject(StorageService);
+  readonly service = inject(MonitorConfigService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly hasError = hasError;
@@ -42,29 +42,29 @@ export class MonitorConfigComponent implements OnInit {
   failed = false;
 
   ngOnInit(): void {
-    const config = this.storage.monitorConfig;
+    const current = this.service.value;
 
     this.form = this.fb.group({
       smtp: this.fb.group({
-        host: [config.smtp.host, [Validators.required, Validators.maxLength(LIMITS.hostMaxLength)]],
-        port: [config.smtp.port, [Validators.required, isPort]],
+        host: [current.smtp.host, [Validators.required, Validators.maxLength(LIMITS.hostMaxLength)]],
+        port: [current.smtp.port, [Validators.required, isPort]],
         username: [
-          config.smtp.username,
+          current.smtp.username,
           [Validators.required, Validators.maxLength(LIMITS.usernameMaxLength)],
         ],
         password: [
-          config.smtp.password,
+          current.smtp.password,
           [Validators.required, Validators.maxLength(LIMITS.passwordMaxLength)],
         ],
-        use_tls: [config.smtp.use_tls],
+        use_tls: [current.smtp.use_tls],
         from_address: [
-          config.smtp.from_address,
+          current.smtp.from_address,
           [Validators.required, isEmail, Validators.maxLength(LIMITS.emailMaxLength)],
         ],
       }),
       timing: this.fb.group({
         check_interval_in_seconds: [
-          config.timing.check_interval_in_seconds,
+          current.timing.check_interval_in_seconds,
           [
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
@@ -73,7 +73,7 @@ export class MonitorConfigComponent implements OnInit {
           ],
         ],
         check_timeout_in_seconds: [
-          config.timing.check_timeout_in_seconds,
+          current.timing.check_timeout_in_seconds,
           [
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
@@ -82,7 +82,7 @@ export class MonitorConfigComponent implements OnInit {
           ],
         ],
         notification_interval_in_seconds: [
-          config.timing.notification_interval_in_seconds,
+          current.timing.notification_interval_in_seconds,
           [
             Validators.required,
             Validators.min(LIMITS.timingMinSeconds),
@@ -93,7 +93,7 @@ export class MonitorConfigComponent implements OnInit {
       }),
       concurrency: this.fb.group({
         check_workers: [
-          config.concurrency.check_workers,
+          current.concurrency.check_workers,
           [
             Validators.required,
             Validators.min(LIMITS.workersMinValue),
@@ -119,18 +119,18 @@ export class MonitorConfigComponent implements OnInit {
     }
 
     const raw = this.form.getRawValue();
-    this.storage.setMonitorConfig({
+    this.service.set({
       smtp: raw.smtp,
       timing: raw.timing,
       concurrency: raw.concurrency,
-      paths: this.storage.monitorConfig.paths,
+      paths: this.service.value.paths,
     });
     this.saved = true;
     this.failed = false;
   }
 
   reset(): void {
-    this.form.reset(this.storage.monitorConfig);
+    this.form.reset(this.service.value);
     this.saved = false;
     this.failed = false;
   }

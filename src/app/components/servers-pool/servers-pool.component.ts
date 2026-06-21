@@ -1,9 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 
-import { StorageService } from '../../services/storage.service';
-import { Server, ServersPool } from '../../models/servers-pool.model';
+import { ServersPoolService } from '../../services/servers-pool.service';
+import { Server } from '../../models/servers-pool.model';
 import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
@@ -28,9 +27,8 @@ const LIMITS = {
 })
 export class ServersPoolComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly storage = inject(StorageService);
+  readonly service = inject(ServersPoolService);
 
-  readonly servers$: Observable<ServersPool> = this.storage.serversPool$;
   readonly hasError = hasError;
   readonly limits = LIMITS;
   form!: FormGroup;
@@ -75,7 +73,7 @@ export class ServersPoolComponent implements OnInit {
   }
 
   edit(index: number): void {
-    const server = this.storage.serversPool[index];
+    const server = this.service.value[index];
     this.form.setValue({
       hostname: server.hostname,
       port: server.port,
@@ -97,8 +95,8 @@ export class ServersPoolComponent implements OnInit {
     if (hasIp) server.ip = raw.ip;
     else server.dns = raw.dns;
 
-    if (this.isEditing) this.storage.updateServer(this.editingIndex!, server);
-    else this.storage.addServer(server);
+    if (this.isEditing) this.service.updateOne(this.editingIndex!, server);
+    else this.service.addOne(server);
     this.cancel();
   }
 
@@ -108,12 +106,12 @@ export class ServersPoolComponent implements OnInit {
   }
 
   remove(index: number): void {
-    this.storage.removeServer(index);
+    this.service.removeOne(index);
     if (this.isEditing) this.cancel();
   }
 
   private otherHostnames(): string[] {
-    return this.storage.serversPool
+    return this.service.value
       .filter((_, index) => index !== this.editingIndex)
       .map((server) => server.hostname);
   }

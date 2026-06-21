@@ -1,4 +1,4 @@
-<app-page-header title="Servers" [artifact]="'serversPool'"></app-page-header>
+<app-page-header title="Servers" [io]="service"></app-page-header>
 
 <div class="card mb-4">
   <div class="card-header">{{ isEditing ? 'Edit server' : 'Add server' }}</div>
@@ -89,8 +89,8 @@
       <th scope="col" class="text-end">Actions</th>
     </tr>
   </thead>
-  <tbody *ngIf="servers$ | async as servers">
-    <tr *ngFor="let server of servers; let i = index">
+  <tbody *ngIf="service.value$ | async as list">
+    <tr *ngFor="let server of list; let i = index">
       <td>{{ server.hostname }}</td>
       <td>
         <span class="badge text-bg-secondary me-1">{{ addressType(server) }}</span>
@@ -106,7 +106,7 @@
         </button>
       </td>
     </tr>
-    <tr *ngIf="servers.length === 0">
+    <tr *ngIf="list.length === 0">
       <td colspan="4" class="text-center text-muted">No servers yet.</td>
     </tr>
   </tbody>

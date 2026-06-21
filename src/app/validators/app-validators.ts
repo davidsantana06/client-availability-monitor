@@ -15,23 +15,19 @@ export function isInteger(control: AbstractControl): ValidationErrors | null {
 export function isPort(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  const { value } = control;
-  const isValid = Number.isInteger(value) && value >= PORT_MIN_VALUE && value <= PORT_MAX_VALUE;
-  return isValid ? null : { port: true };
+  return isValidPort(control.value) ? null : { port: true };
 }
 
 export function isEmail(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  const isValid = EMAIL_PATTERN.test(control.value);
-  return isValid ? null : { email: true };
+  return isValidEmail(control.value) ? null : { email: true };
 }
 
 export function isIpv4(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  const isValid = IPV4_PATTERN.test(control.value);
-  return isValid ? null : { ipv4: true };
+  return isValidIpv4(control.value) ? null : { ipv4: true };
 }
 
 export function isExactlyOneOf(keys: string[]): ValidatorFn {
@@ -54,6 +50,43 @@ export function isUniqueIn(getExisting: () => string[]): ValidatorFn {
 export function hasError(form: AbstractControl, path: string): boolean {
   const control = form.get(path);
   return !!control && control.invalid && control.touched;
+}
+
+export function parseJson(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error('The file is not valid JSON.');
+  }
+}
+
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+export function isPositiveInteger(value: unknown): boolean {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 1;
+}
+
+export function isValidPort(value: unknown): boolean {
+  return (
+    typeof value === 'number' &&
+    Number.isInteger(value) &&
+    value >= PORT_MIN_VALUE &&
+    value <= PORT_MAX_VALUE
+  );
+}
+
+export function isValidEmail(value: unknown): boolean {
+  return isNonEmptyString(value) && EMAIL_PATTERN.test(value);
+}
+
+export function isValidIpv4(value: unknown): boolean {
+  return isNonEmptyString(value) && IPV4_PATTERN.test(value);
 }
 
 function isEmpty(value: unknown): boolean {

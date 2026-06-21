@@ -1,9 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 
-import { StorageService } from '../../services/storage.service';
-import { User, UsersInfo } from '../../models/users-info.model';
+import { UsersInfoService } from '../../services/users-info.service';
+import { User } from '../../models/users-info.model';
 import { hasError, isEmail, isUniqueIn } from '../../validators/app-validators';
 
 const LIMITS = {
@@ -17,9 +16,8 @@ const LIMITS = {
 })
 export class UsersInfoComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly storage = inject(StorageService);
+  readonly service = inject(UsersInfoService);
 
-  readonly users$: Observable<UsersInfo> = this.storage.usersInfo$;
   readonly hasError = hasError;
   readonly limits = LIMITS;
   form!: FormGroup;
@@ -45,7 +43,7 @@ export class UsersInfoComponent implements OnInit {
   }
 
   edit(index: number): void {
-    const user = this.storage.usersInfo[index];
+    const user = this.service.value[index];
     this.form.setValue({ username: user.username, email: user.email });
     this.editingIndex = index;
   }
@@ -58,10 +56,8 @@ export class UsersInfoComponent implements OnInit {
 
     const raw = this.form.getRawValue();
     const user: User = { username: raw.username.trim(), email: raw.email.trim() };
-    const users = [...this.storage.usersInfo];
-    if (this.isEditing) users[this.editingIndex!] = user;
-    else users.push(user);
-    this.storage.setUsersInfo(users);
+    if (this.isEditing) this.service.updateOne(this.editingIndex!, user);
+    else this.service.addOne(user);
     this.cancel();
   }
 
@@ -71,12 +67,12 @@ export class UsersInfoComponent implements OnInit {
   }
 
   remove(index: number): void {
-    this.storage.setUsersInfo(this.storage.usersInfo.filter((_, i) => i !== index));
+    this.service.removeOne(index);
     if (this.isEditing) this.cancel();
   }
 
   private otherEmails(): string[] {
-    return this.storage.usersInfo
+    return this.service.value
       .filter((_, index) => index !== this.editingIndex)
       .map((user) => user.email);
   }

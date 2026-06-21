@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { AlertMessage } from '../../services/export.service';
+export interface AlertMessage {
+  type: 'success' | 'danger';
+  lines: string[];
+}
 
 @Component({
   selector: 'app-alert',

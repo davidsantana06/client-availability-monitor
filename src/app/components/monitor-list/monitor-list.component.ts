@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Observable, combineLatest, map } from 'rxjs';
 
-import { StorageService } from '../../services/storage.service';
+import { ServersPoolService } from '../../services/servers-pool.service';
+import { MonitorListService } from '../../services/monitor-list.service';
 
 interface MonitorListRow {
   hostname: string;
@@ -19,17 +20,18 @@ interface MonitorListView {
   templateUrl: './monitor-list.component.html',
 })
 export class MonitorListComponent {
-  private readonly storage = inject(StorageService);
+  private readonly servers = inject(ServersPoolService);
+  readonly service = inject(MonitorListService);
 
   readonly view$: Observable<MonitorListView> = combineLatest([
-    this.storage.serversPool$,
-    this.storage.monitorList$,
+    this.servers.value$,
+    this.service.value$,
   ]).pipe(
-    map(([servers, list]) => {
+    map(([pool, list]) => {
       const selected = new Set(list);
-      const known = new Set(servers.map((server) => server.hostname));
+      const known = new Set(pool.map((server) => server.hostname));
       return {
-        rows: servers.map((server) => ({
+        rows: pool.map((server) => ({
           hostname: server.hostname,
           checked: selected.has(server.hostname),
         })),
@@ -41,14 +43,7 @@ export class MonitorListComponent {
 
   toggle(hostname: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    const current = this.storage.monitorList;
-
-    if (!checked) {
-      this.storage.setMonitorList(current.filter((entry) => entry !== hostname));
-      return;
-    }
-
-    const alreadyExists = current.includes(hostname);
-    if (!alreadyExists) this.storage.setMonitorList([...current, hostname]);
+    if (checked) this.service.select(hostname);
+    else this.service.deselect(hostname);
   }
 }
