@@ -2,7 +2,7 @@
   <h1 class="h3 mb-0">{{ title }}</h1>
   <div class="d-flex gap-2">
     <label class="btn btn-outline-secondary mb-0" [appTooltip]="importTooltip">
-      <i class="bi bi-upload me-1"></i>Import
+      <i class="bi bi-upload me-1" aria-hidden="true"></i>Import
       <input type="file" [accept]="accept" (change)="import($event)" hidden />
     </label>
     <button
@@ -11,7 +11,7 @@
       [appTooltip]="exportTooltip"
       (click)="export()"
     >
-      <i class="bi bi-download me-1"></i>Export
+      <i class="bi bi-download me-1" aria-hidden="true"></i>Export
     </button>
   </div>
 </div>
