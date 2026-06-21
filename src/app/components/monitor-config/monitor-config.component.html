@@ -54,15 +54,24 @@
         </div>
         <div class="col-md-6">
           <label class="form-label" for="smtp-password">Password</label>
-          <input
-            id="smtp-password"
-            type="password"
-            class="form-control"
-            formControlName="password"
-            [attr.maxlength]="limits.passwordMaxLength"
-            [class.is-invalid]="hasError(form,'smtp.password')"
-          />
-          <div class="invalid-feedback">Password is required.</div>
+          <div class="input-group has-validation">
+            <input
+              id="smtp-password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              formControlName="password"
+              [attr.maxlength]="limits.passwordMaxLength"
+              [class.is-invalid]="hasError(form,'smtp.password')"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="showPassword = !showPassword"
+            >
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+            <div class="invalid-feedback">Password is required.</div>
+          </div>
         </div>
         <div class="col-md-8">
           <label class="form-label" for="smtp-from">From address</label>

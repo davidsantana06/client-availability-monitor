@@ -40,6 +40,7 @@ export class MonitorConfigComponent implements OnInit {
   form!: FormGroup;
   saved = false;
   failed = false;
+  showPassword = false;
 
   ngOnInit(): void {
     const current = this.service.value;
