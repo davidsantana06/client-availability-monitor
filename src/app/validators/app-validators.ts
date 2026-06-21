@@ -89,6 +89,11 @@ export function isValidIpv4(value: unknown): boolean {
   return isNonEmptyString(value) && IPV4_PATTERN.test(value);
 }
 
+export function hasUniqueValues(values: string[]): boolean {
+  const normalized = values.map(normalize);
+  return new Set(normalized).size === normalized.length;
+}
+
 function isEmpty(value: unknown): boolean {
   return value === null || value === undefined || value === '';
 }

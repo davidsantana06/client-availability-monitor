@@ -1,8 +1,18 @@
-import { isNonEmptyString, isRecord, isValidIpv4, isValidPort } from './app-validators';
+import {
+  hasUniqueValues,
+  isNonEmptyString,
+  isRecord,
+  isValidIpv4,
+  isValidPort,
+} from './app-validators';
 import { Server, ServersPool } from '../models/servers-pool.model';
 
 export function isServersPool(value: unknown): value is ServersPool {
-  return Array.isArray(value) && value.every(isServer);
+  return (
+    Array.isArray(value) &&
+    value.every(isServer) &&
+    hasUniqueValues(value.map((server) => server.hostname))
+  );
 }
 
 function isServer(value: unknown): value is Server {
