@@ -73,13 +73,7 @@ export class ServersPoolComponent implements OnInit {
   }
 
   edit(index: number): void {
-    const server = this.service.value[index];
-    this.form.setValue({
-      hostname: server.hostname,
-      port: server.port,
-      ip: server.ip ?? '',
-      dns: server.dns ?? '',
-    });
+    this.fillForm(this.service.value[index]);
     this.editingIndex = index;
   }
 
@@ -100,14 +94,32 @@ export class ServersPoolComponent implements OnInit {
     this.cancel();
   }
 
+  reset(): void {
+    if (this.isEditing) this.fillForm(this.service.value[this.editingIndex!]);
+    else this.clearForm();
+  }
+
   cancel(): void {
-    this.form.reset({ hostname: '', port: null, ip: '', dns: '' });
+    this.clearForm();
     this.editingIndex = null;
   }
 
   remove(index: number): void {
     this.service.removeOne(index);
     if (this.isEditing) this.cancel();
+  }
+
+  private fillForm(server: Server): void {
+    this.form.setValue({
+      hostname: server.hostname,
+      port: server.port,
+      ip: server.ip ?? '',
+      dns: server.dns ?? '',
+    });
+  }
+
+  private clearForm(): void {
+    this.form.reset({ hostname: '', port: null, ip: '', dns: '' });
   }
 
   private otherHostnames(): string[] {
