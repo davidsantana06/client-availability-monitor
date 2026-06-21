@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ServersPoolService } from '../../services/servers-pool.service';
 import { Server } from '../../models/servers-pool.model';
+import { ConfirmRequest } from '../confirm-dialog/confirm-dialog.component';
 import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
@@ -33,6 +34,7 @@ export class ServersPoolComponent implements OnInit {
   readonly limits = LIMITS;
   form!: FormGroup;
   editingIndex: number | null = null;
+  removalIndex: number | null = null;
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -55,6 +57,17 @@ export class ServersPoolComponent implements OnInit {
 
   get isEditing(): boolean {
     return this.editingIndex !== null;
+  }
+
+  get removalRequest(): ConfirmRequest | null {
+    if (this.removalIndex === null) return null;
+
+    const server = this.service.value[this.removalIndex];
+    return {
+      title: 'Remove server?',
+      message: `"${server.hostname}" will be removed from the pool and the monitor list.`,
+      confirmLabel: 'Remove',
+    };
   }
 
   get isAddressInvalid(): boolean {
@@ -105,8 +118,17 @@ export class ServersPoolComponent implements OnInit {
   }
 
   remove(index: number): void {
-    this.service.removeOne(index);
+    this.removalIndex = index;
+  }
+
+  confirmRemoval(): void {
+    this.service.removeOne(this.removalIndex!);
     if (this.isEditing) this.cancel();
+    this.removalIndex = null;
+  }
+
+  cancelRemoval(): void {
+    this.removalIndex = null;
   }
 
   private fillForm(server: Server): void {

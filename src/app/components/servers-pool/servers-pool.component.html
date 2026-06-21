@@ -112,3 +112,9 @@
     </tr>
   </tbody>
 </table>
+
+<app-confirm-dialog
+  [request]="removalRequest"
+  (confirmed)="confirmRemoval()"
+  (cancelled)="cancelRemoval()"
+></app-confirm-dialog>
