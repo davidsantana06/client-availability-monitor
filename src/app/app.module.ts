@@ -13,6 +13,7 @@ import { ServersPoolComponent } from './components/servers-pool/servers-pool.com
 import { MonitorListComponent } from './components/monitor-list/monitor-list.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
 import { AlertComponent } from './components/alert/alert.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { TooltipDirective } from './directives/tooltip.directive';
 
 @NgModule({
@@ -27,6 +28,7 @@ import { TooltipDirective } from './directives/tooltip.directive';
     MonitorListComponent,
     PageHeaderComponent,
     AlertComponent,
+    ConfirmDialogComponent,
     TooltipDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],
