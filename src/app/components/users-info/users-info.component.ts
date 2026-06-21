@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UsersInfoService } from '../../services/users-info.service';
 import { User } from '../../models/users-info.model';
+import { ConfirmRequest } from '../confirm-dialog/confirm-dialog.component';
 import { hasError, isEmail, isUniqueIn } from '../../validators/app-validators';
 
 const LIMITS = {
@@ -22,6 +23,7 @@ export class UsersInfoComponent implements OnInit {
   readonly limits = LIMITS;
   form!: FormGroup;
   editingIndex: number | null = null;
+  removalIndex: number | null = null;
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -40,6 +42,17 @@ export class UsersInfoComponent implements OnInit {
 
   get isEditing(): boolean {
     return this.editingIndex !== null;
+  }
+
+  get removalRequest(): ConfirmRequest | null {
+    if (this.removalIndex === null) return null;
+
+    const user = this.service.value[this.removalIndex];
+    return {
+      title: 'Remove user?',
+      message: `"${user.username}" will be removed.`,
+      confirmLabel: 'Remove',
+    };
   }
 
   edit(index: number): void {
@@ -71,8 +84,17 @@ export class UsersInfoComponent implements OnInit {
   }
 
   remove(index: number): void {
-    this.service.removeOne(index);
+    this.removalIndex = index;
+  }
+
+  confirmRemoval(): void {
+    this.service.removeOne(this.removalIndex!);
     if (this.isEditing) this.cancel();
+    this.removalIndex = null;
+  }
+
+  cancelRemoval(): void {
+    this.removalIndex = null;
   }
 
   private fillForm(user: User): void {
