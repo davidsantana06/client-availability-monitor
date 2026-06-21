@@ -18,7 +18,7 @@
         [disabled]="view.allChecked && !view.orphans.length"
         (click)="service.selectAll(view.hostnames)"
       >
-        Select all
+        <i class="bi bi-check-all me-1"></i>Select all
       </button>
       <button
         type="button"
@@ -26,7 +26,7 @@
         [disabled]="!view.selectedCount"
         (click)="service.clear()"
       >
-        Clear all
+        <i class="bi bi-eraser me-1"></i>Clear all
       </button>
     </div>
 
