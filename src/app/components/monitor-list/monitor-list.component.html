@@ -10,20 +10,41 @@
     {{ view.orphans.join(', ') }}
   </div>
 
-  <ul class="list-group mb-3" *ngIf="view.rows.length; else emptyPool">
-    <li class="list-group-item" *ngFor="let row of view.rows">
-      <div class="form-check mb-0">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          [id]="'srv-' + row.hostname"
-          [checked]="row.checked"
-          (change)="toggle(row.hostname, $event)"
-        />
-        <label class="form-check-label" [for]="'srv-' + row.hostname">{{ row.hostname }}</label>
-      </div>
-    </li>
-  </ul>
+  <ng-container *ngIf="view.rows.length; else emptyPool">
+    <div class="d-flex gap-2 mb-3">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="view.allChecked && !view.orphans.length"
+        (click)="service.selectAll(view.hostnames)"
+      >
+        Select all
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        [disabled]="!view.selectedCount"
+        (click)="service.clear()"
+      >
+        Clear all
+      </button>
+    </div>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item" *ngFor="let row of view.rows">
+        <div class="form-check mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'srv-' + row.hostname"
+            [checked]="row.checked"
+            (change)="toggle(row.hostname, $event)"
+          />
+          <label class="form-check-label" [for]="'srv-' + row.hostname">{{ row.hostname }}</label>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
 
   <ng-template #emptyPool>
     <p class="text-muted">No servers in the pool. Add servers in the Servers tab first.</p>

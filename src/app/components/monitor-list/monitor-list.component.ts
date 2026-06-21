@@ -11,8 +11,10 @@ interface MonitorListRow {
 
 interface MonitorListView {
   rows: MonitorListRow[];
+  hostnames: string[];
   orphans: string[];
   selectedCount: number;
+  allChecked: boolean;
 }
 
 @Component({
@@ -29,14 +31,15 @@ export class MonitorListComponent {
   ]).pipe(
     map(([pool, list]) => {
       const selected = new Set(list);
-      const known = new Set(pool.map((server) => server.hostname));
+      const hostnames = pool.map((server) => server.hostname);
+      const known = new Set(hostnames);
+      const rows = hostnames.map((hostname) => ({ hostname, checked: selected.has(hostname) }));
       return {
-        rows: pool.map((server) => ({
-          hostname: server.hostname,
-          checked: selected.has(server.hostname),
-        })),
+        rows,
+        hostnames,
         orphans: list.filter((hostname) => !known.has(hostname)),
         selectedCount: list.length,
+        allChecked: rows.length > 0 && rows.every((row) => row.checked),
       };
     }),
   );

@@ -37,6 +37,14 @@ export class MonitorListService extends ArtifactStore<MonitorList> {
     if (this.value.includes(hostname)) this.set(this.value.filter((entry) => entry !== hostname));
   }
 
+  selectAll(hostnames: string[]): void {
+    this.set([...hostnames]);
+  }
+
+  clear(): void {
+    this.set([]);
+  }
+
   rename(from: string, to: string): void {
     if (!this.value.includes(from)) return;
     this.set(this.value.map((hostname) => (hostname === from ? to : hostname)));
