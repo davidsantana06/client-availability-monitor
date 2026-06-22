@@ -1,15 +1,15 @@
-# Pipeline de CI/CD para fazer o deploy da aplicação no GitHub Pages.
+# Pipeline de CI/CD para fazer o deploy da aplicação no GitHub Pages
 name: Deploy to GitHub Pages
 run-name: ${{ github.actor }} is deploying to GitHub Pages 🚀
 
-# Dispara automaticamente em pushes para a branch main ou manualmente.
+# Dispara automaticamente em pushes para a branch main ou manualmente
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
-# Permite ao pipeline publicar a página (escreve na branch gh-pages).
+# Permite ao pipeline publicar a página (escreve na branch gh-pages)
 permissions:
   contents: write
 
@@ -17,7 +17,7 @@ jobs:
   deploy-github-pages:
     runs-on: ubuntu-latest
     steps:
-      # Etapa 1: baixa o código do repositório para a máquina do GitHub Actions.
+      # Etapa 1: baixa o código do repositório para a máquina do GitHub Actions
       - name: Check out repository code
         uses: actions/checkout@v4
 
@@ -28,23 +28,23 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      # Etapa 3: instala as dependências de forma limpa e reprodutível.
+      # Etapa 3: instala as dependências de forma limpa e reprodutível
       - name: Install dependencies
         run: npm ci
 
-      # Etapa 4: executa os testes em Chrome headless, sem watch.
+      # Etapa 4: executa os testes em Chrome headless, sem watch
       - name: Run tests
         run: npm run test:ci
 
-      # Etapa 5: gera o build de produção com o base-href do GitHub Pages.
+      # Etapa 5: gera o build de produção com o base-href do GitHub Pages
       - name: Build project
         run: npm run build -- --base-href=/client-availability-monitor/
 
-      # Etapa 6: cria o fallback de SPA para que deep-links não retornem 404 no Pages.
+      # Etapa 6: cria o fallback de SPA para que deep-links não retornem 404 no Pages
       - name: Add SPA fallback
         run: cp dist/client-availability-monitor/browser/index.html dist/client-availability-monitor/browser/404.html
 
-      # Etapa 7: publica o conteúdo do build na branch gh-pages.
+      # Etapa 7: publica o conteúdo do build na branch gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

@@ -1,4 +1,4 @@
-**client-availability-monitor (CAM)** é a interface web (SPA) do Availability Monitor — um painel para editar, validar e exportar os quatro arquivos de configuração consumidos pelo motor de monitoramento em Python (SAM, `server-availability-monitor`), 100% local e em memória, sem backend.
+**client-availability-monitor (CAM)** é a interface web (SPA) do Availability Monitor — um painel para editar, validar e exportar os quatro arquivos de configuração consumidos pelo motor de monitoramento em Python, o Server Availability Monitor (SAM), 100% local e em memória, sem backend.
 
 ![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
@@ -25,7 +25,7 @@
 
 #### 🔒 Dependências e Segurança
 
-O Angular 18 saiu do suporte oficial, então o `npm audit` acusa vulnerabilidades sem patch para a linha 18.2.x. Elas são aceitas conscientemente: sendo uma SPA estática e offline (sem backend, `HttpClient` ou SSR), as advisories de framework não têm superfície de ataque, e as de _tooling_ são de _build-time_, fora do bundle publicado. Zerá-las exigiria `ng update` para um Angular suportado, um upgrade de framework à parte.
+O Angular 18 saiu do suporte oficial, então o `npm audit` acusa vulnerabilidades sem patch para a linha 18.2.x. Sendo uma SPA estática e offline (sem backend, `HttpClient` ou SSR), as advisories de framework não têm superfície de ataque, e as de _tooling_ são de _build-time_, fora do bundle publicado. Zerá-las exigiria `ng update` para um Angular suportado, um upgrade de framework à parte.
 
 ## 🧭 Visão Geral
 
@@ -48,6 +48,11 @@ Os dados vivem inteiramente em memória (sem API, banco ou `localStorage`), seme
 
 O CAM segue o padrão de arquitetura MVVM, na forma idiomática do Angular, sobre uma camada de serviços (_store_) reativa, com:
 
+<div align="center">
+  <img src="./assets/architecture.png" alt="Arquitetura" width="100%">
+  <p><sub>ARQUITETURA</sub></p>
+</div>
+
 - **Model** — `models/` (interfaces em `snake_case`) + `services/` (os _stores_ em memória `ArtifactStore<T>` e as regras de domínio: validação de conteúdo e a cascata de integridade referencial).
 - **View** — os _templates_ `*.html` (marcação Bootstrap), com _binding_ via Reactive Forms e `async` pipe.
 - **ViewModel** — as classes de componente (`*.component.ts`): expõem estado observável/derivado (`view$`, `isEditing`, `removalRequest`) e comandos (`submit`, `confirmRemoval`), delegando persistência e domínio aos serviços.
@@ -56,7 +61,7 @@ Cada serviço estende `ArtifactStore<T>` (um `BehaviorSubject` exposto como `val
 
 ## 🛠️ Instalação e Execução
 
-Projeto Angular 18 sobre Node.js. Os passos abaixo assumem um ambiente ainda não preparado.
+Os passos abaixo assumem um sistema operacional "zerado" e devem ser executados a partir da raiz do projeto:
 
 ### 1️⃣ Instalar o Node.js
 
@@ -107,14 +112,14 @@ O deploy da aplicação é feito de forma totalmente automatizada via GitHub Act
 
 - Baixa o código e instala as dependências.
 - Roda os testes em Chrome headless.
-- Gera o build de produção (com `--base-href` do GitHub Pages e um `404.html` de fallback para a SPA).
+- Gera o build de produção.
 - Publica apenas os arquivos finais (pasta `dist/client-availability-monitor/browser/`) na branch `gh-pages`.
 
 O GitHub Pages serve a aplicação diretamente dessa branch compilada.
 
 ## 🧪 Cobertura de Testes
 
-A suíte cobre a lógica que pode quebrar o monitor, cobrindo:
+A suíte de testes cobre:
 
 - Validadores (`validators/app-validators.spec.ts`) — `isIntegerControl`, `isPortControl`, `isEmailControl`, `isIpv4Control`, `isExactlyOneOfControl`, `isUniqueInControl` e o auxiliar `hasError`.
 - Integridade referencial (`services/servers-pool.service.spec.ts`) — a cascata Servers → Monitor List ao renomear ou remover um servidor.
@@ -169,15 +174,13 @@ client-availability-monitor/
 └── package.json
 ```
 
-ℹ️ Os testes ficam colocados ao lado do código-fonte (`*.spec.ts`).
-
 ### 📁 `src/app/`
 
 Código-fonte da aplicação.
 
 #### 📁 `components/`
 
-Um componente por aba (declarados em `app.module.ts`, sem _standalone_), mais os apresentacionais compartilhados — `page-header`, `confirm-dialog` e `alert`. O `layout` envolve a `navbar` e o `<router-outlet>`; o `home` é a landing.
+Um componente por aba (declarados em `app.module.ts`, sem _standalone_), mais os apresentacionais compartilhados — `page-header`, `confirm-dialog` e `alert`. O `layout` envolve a `navbar` e o `<router-outlet>`; o `home` é a landing page.
 
 #### 📁 `services/`
 
