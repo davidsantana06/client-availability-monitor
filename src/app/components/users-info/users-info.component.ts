@@ -74,8 +74,8 @@ export class UsersInfoComponent implements OnInit {
   }
 
   edit(index: number): void {
-    this.fillForm(this.service.value[index]);
     this.editingIndex = index;
+    this.fillForm(this.service.value[index]);
   }
 
   cancel(): void {
