@@ -1,10 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { UsersInfoService } from '../../services/users-info.service';
-import { User } from '../../models/users-info.model';
-import { ConfirmRequest } from '../confirm-dialog/confirm-dialog.component';
-import { hasError, isEmailControl, isUniqueInControl } from '../../validators/app-validators';
+import { ConfirmRequest } from '@app/components/confirm-dialog/confirm-dialog.component';
+import { User } from '@app/models/users-info.model';
+import { UsersInfoService } from '@app/services/users-info.service';
+import { hasError, isEmailControl, isUniqueInControl } from '@app/validators/app-validators';
 
 const LIMITS = {
   usernameMaxLength: 120,
@@ -55,11 +55,6 @@ export class UsersInfoComponent implements OnInit {
     };
   }
 
-  edit(index: number): void {
-    this.fillForm(this.service.value[index]);
-    this.editingIndex = index;
-  }
-
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -76,6 +71,11 @@ export class UsersInfoComponent implements OnInit {
   reset(): void {
     if (this.isEditing) this.fillForm(this.service.value[this.editingIndex!]);
     else this.clearForm();
+  }
+
+  edit(index: number): void {
+    this.fillForm(this.service.value[index]);
+    this.editingIndex = index;
   }
 
   cancel(): void {

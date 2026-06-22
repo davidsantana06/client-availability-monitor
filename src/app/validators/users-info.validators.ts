@@ -1,5 +1,11 @@
-import { hasUniqueValues, isNonEmptyString, isRecord, isEmailValue } from './app-validators';
-import { User, UsersInfo } from '../models/users-info.model';
+import { User, UsersInfo } from '@app/models/users-info.model';
+
+import {
+  hasUniqueValues,
+  isNonEmptyString,
+  isRecord,
+  isEmailValue,
+} from '@app/validators/app-validators';
 
 export function isUsersInfo(value: unknown): value is UsersInfo {
   return (

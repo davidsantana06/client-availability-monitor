@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomeComponent } from './components/home/home.component';
-import { LayoutComponent } from './components/layout/layout.component';
-import { MonitorConfigComponent } from './components/monitor-config/monitor-config.component';
-import { UsersInfoComponent } from './components/users-info/users-info.component';
-import { ServersPoolComponent } from './components/servers-pool/servers-pool.component';
-import { MonitorListComponent } from './components/monitor-list/monitor-list.component';
+import { HomeComponent } from '@app/components/home/home.component';
+import { LayoutComponent } from '@app/components/layout/layout.component';
+import { MonitorConfigComponent } from '@app/components/monitor-config/monitor-config.component';
+import { MonitorListComponent } from '@app/components/monitor-list/monitor-list.component';
+import { ServersPoolComponent } from '@app/components/servers-pool/servers-pool.component';
+import { UsersInfoComponent } from '@app/components/users-info/users-info.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },

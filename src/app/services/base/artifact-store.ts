@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ArtifactIo } from '../contract/artifact-io';
+import { ArtifactIo } from '@app/services/contract/artifact-io';
 
 export abstract class ArtifactStore<T> implements ArtifactIo {
   private readonly subject: BehaviorSubject<T>;

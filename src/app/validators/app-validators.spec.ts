@@ -8,7 +8,7 @@ import {
   isIpv4Control,
   isPortControl,
   isUniqueInControl,
-} from './app-validators';
+} from '@app/validators/app-validators';
 
 describe('app-validators', () => {
   describe('isIntegerControl', () => {

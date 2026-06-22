@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { ServersPoolService } from '../../services/servers-pool.service';
-import { Server } from '../../models/servers-pool.model';
-import { ConfirmRequest } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmRequest } from '@app/components/confirm-dialog/confirm-dialog.component';
+import { Server } from '@app/models/servers-pool.model';
+import { ServersPoolService } from '@app/services/servers-pool.service';
 import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
@@ -12,7 +12,7 @@ import {
   isIpv4Control,
   isPortControl,
   isUniqueInControl,
-} from '../../validators/app-validators';
+} from '@app/validators/app-validators';
 
 const LIMITS = {
   hostnameMaxLength: 253,
@@ -85,11 +85,6 @@ export class ServersPoolComponent implements OnInit {
     return server.ip || server.dns || '';
   }
 
-  edit(index: number): void {
-    this.fillForm(this.service.value[index]);
-    this.editingIndex = index;
-  }
-
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -110,6 +105,11 @@ export class ServersPoolComponent implements OnInit {
   reset(): void {
     if (this.isEditing) this.fillForm(this.service.value[this.editingIndex!]);
     else this.clearForm();
+  }
+
+  edit(index: number): void {
+    this.fillForm(this.service.value[index]);
+    this.editingIndex = index;
   }
 
   cancel(): void {

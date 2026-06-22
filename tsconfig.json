@@ -5,6 +5,7 @@
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.spec.json" }],
   "compilerOptions": {
+    "paths": { "@app/*": ["./src/app/*"] },
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,

@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 
-import { ArtifactStore } from './base/artifact-store';
-import { ExportService } from './export.service';
-import { MonitorConfig } from '../models/monitor-config.model';
-import { isMonitorConfig } from '../validators/monitor-config.validators';
+import { MonitorConfig } from '@app/models/monitor-config.model';
+import { ArtifactStore } from '@app/services/base/artifact-store';
+import { isMonitorConfig } from '@app/validators/monitor-config.validators';
+
+import { ExportService } from '@app/services/export.service';
 
 const FILENAME = 'monitor_config.json';
 

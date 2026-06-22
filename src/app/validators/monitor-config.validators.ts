@@ -1,11 +1,12 @@
+import { MonitorConfig } from '@app/models/monitor-config.model';
+
 import {
   isNonEmptyString,
   isPositiveIntegerValue,
   isRecord,
   isEmailValue,
   isPortValue,
-} from './app-validators';
-import { MonitorConfig } from '../models/monitor-config.model';
+} from '@app/validators/app-validators';
 
 export function isMonitorConfig(value: unknown): value is MonitorConfig {
   return (

@@ -1,34 +1,39 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LayoutComponent } from './components/layout/layout.component';
-import { HomeComponent } from './components/home/home.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { MonitorConfigComponent } from './components/monitor-config/monitor-config.component';
-import { UsersInfoComponent } from './components/users-info/users-info.component';
-import { ServersPoolComponent } from './components/servers-pool/servers-pool.component';
-import { MonitorListComponent } from './components/monitor-list/monitor-list.component';
-import { PageHeaderComponent } from './components/page-header/page-header.component';
-import { AlertComponent } from './components/alert/alert.component';
-import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
-import { TooltipDirective } from './directives/tooltip.directive';
+import { AlertComponent } from '@app/components/alert/alert.component';
+import { ConfirmDialogComponent } from '@app/components/confirm-dialog/confirm-dialog.component';
+import { HomeComponent } from '@app/components/home/home.component';
+import { LayoutComponent } from '@app/components/layout/layout.component';
+import { MonitorConfigComponent } from '@app/components/monitor-config/monitor-config.component';
+import { MonitorListComponent } from '@app/components/monitor-list/monitor-list.component';
+import { NavbarComponent } from '@app/components/navbar/navbar.component';
+import { PageHeaderComponent } from '@app/components/page-header/page-header.component';
+import { ServersPoolComponent } from '@app/components/servers-pool/servers-pool.component';
+import { UsersInfoComponent } from '@app/components/users-info/users-info.component';
+import { TooltipDirective } from '@app/directives/tooltip.directive';
+
+import { AppRoutingModule } from '@app/app-routing.module';
+import { AppComponent } from '@app/app.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+
     LayoutComponent,
-    HomeComponent,
     NavbarComponent,
+    HomeComponent,
+
     MonitorConfigComponent,
     UsersInfoComponent,
     ServersPoolComponent,
     MonitorListComponent,
+
     PageHeaderComponent,
-    AlertComponent,
     ConfirmDialogComponent,
+    AlertComponent,
+
     TooltipDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],

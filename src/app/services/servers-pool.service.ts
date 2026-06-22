@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 
-import { ArtifactStore } from './base/artifact-store';
-import { ExportService } from './export.service';
-import { MonitorListService } from './monitor-list.service';
-import { Server, ServersPool } from '../models/servers-pool.model';
-import { isServersPool } from '../validators/servers-pool.validators';
+import { Server, ServersPool } from '@app/models/servers-pool.model';
+import { ArtifactStore } from '@app/services/base/artifact-store';
+import { isServersPool } from '@app/validators/servers-pool.validators';
+
+import { ExportService } from '@app/services/export.service';
+import { MonitorListService } from '@app/services/monitor-list.service';
 
 const FILENAME = 'servers_pool.json';
 

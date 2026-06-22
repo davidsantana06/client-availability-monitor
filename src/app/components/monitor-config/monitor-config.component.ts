@@ -1,8 +1,8 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { MonitorConfigService } from '../../services/monitor-config.service';
+import { MonitorConfigService } from '@app/services/monitor-config.service';
 import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
@@ -10,7 +10,7 @@ import {
   isEmailControl,
   isIntegerControl,
   isPortControl,
-} from '../../validators/app-validators';
+} from '@app/validators/app-validators';
 
 const LIMITS = {
   hostMaxLength: 253,

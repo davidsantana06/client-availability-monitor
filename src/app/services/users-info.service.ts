@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 
-import { ArtifactStore } from './base/artifact-store';
-import { ExportService } from './export.service';
-import { User, UsersInfo } from '../models/users-info.model';
-import { isUsersInfo } from '../validators/users-info.validators';
+import { User, UsersInfo } from '@app/models/users-info.model';
+import { ArtifactStore } from '@app/services/base/artifact-store';
+import { isUsersInfo } from '@app/validators/users-info.validators';
+
+import { ExportService } from '@app/services/export.service';
 
 const FILENAME = 'users_info.json';
 

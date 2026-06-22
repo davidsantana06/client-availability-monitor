@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 
-import { ArtifactStore } from './base/artifact-store';
-import { ExportService } from './export.service';
-import { MonitorList } from '../models/monitor-list.model';
+import { MonitorList } from '@app/models/monitor-list.model';
+import { ArtifactStore } from '@app/services/base/artifact-store';
+
+import { ExportService } from '@app/services/export.service';
 
 const FILENAME = 'monitor_list.txt';
 

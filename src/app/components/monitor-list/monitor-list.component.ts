@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Observable, combineLatest, map } from 'rxjs';
 
-import { ServersPoolService } from '../../services/servers-pool.service';
-import { MonitorListService } from '../../services/monitor-list.service';
+import { MonitorListService } from '@app/services/monitor-list.service';
+import { ServersPoolService } from '@app/services/servers-pool.service';
 
 interface MonitorListRow {
   hostname: string;

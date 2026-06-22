@@ -1,11 +1,12 @@
+import { Server, ServersPool } from '@app/models/servers-pool.model';
+
 import {
   hasUniqueValues,
   isNonEmptyString,
   isRecord,
   isIpv4Value,
   isPortValue,
-} from './app-validators';
-import { Server, ServersPool } from '../models/servers-pool.model';
+} from '@app/validators/app-validators';
 
 export function isServersPool(value: unknown): value is ServersPool {
   return (

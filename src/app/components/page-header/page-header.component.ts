@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { AlertMessage } from '../alert/alert.component';
-import { ArtifactIo } from '../../services/contract/artifact-io';
+import { AlertMessage } from '@app/components/alert/alert.component';
+import { ArtifactIo } from '@app/services/contract/artifact-io';
 
 @Component({
   selector: 'app-page-header',
