@@ -86,10 +86,7 @@ export class ServersPoolComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) return;
 
     const raw = this.form.getRawValue();
     const server: Server = { hostname: raw.hostname.trim(), port: raw.port };
