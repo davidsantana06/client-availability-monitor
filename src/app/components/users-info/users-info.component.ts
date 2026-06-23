@@ -56,10 +56,7 @@ export class UsersInfoComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) return;
 
     const raw = this.form.getRawValue();
     const user: User = { username: raw.username.trim(), email: raw.email.trim() };
