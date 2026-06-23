@@ -39,7 +39,6 @@ export class MonitorConfigComponent implements OnInit {
   readonly limits = LIMITS;
   form!: FormGroup;
   saved = false;
-  failed = false;
   showPassword = false;
 
   ngOnInit(): void {
@@ -107,17 +106,11 @@ export class MonitorConfigComponent implements OnInit {
 
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.saved = false;
-      this.failed = false;
     });
   }
 
   save(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.saved = false;
-      this.failed = true;
-      return;
-    }
+    if (this.form.invalid) return;
 
     const raw = this.form.getRawValue();
     this.service.set({
@@ -127,12 +120,10 @@ export class MonitorConfigComponent implements OnInit {
       paths: this.service.value.paths,
     });
     this.saved = true;
-    this.failed = false;
   }
 
   reset(): void {
     this.form.reset(this.service.value);
     this.saved = false;
-    this.failed = false;
   }
 }
