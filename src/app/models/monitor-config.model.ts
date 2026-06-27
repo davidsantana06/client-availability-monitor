@@ -18,8 +18,8 @@ export interface ConcurrencyConfig {
 }
 
 export interface PathsConfig {
-  servers_config_file: string;
-  user_info_file: string;
+  servers_pool_file: string;
+  users_info_file: string;
   logs_folder: string;
 }
 
