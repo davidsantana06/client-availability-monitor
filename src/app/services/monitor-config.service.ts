@@ -26,8 +26,8 @@ const SEED: MonitorConfig = {
     check_workers: 10,
   },
   paths: {
-    servers_config_file: 'servers_pool.json',
-    user_info_file: 'users_info.json',
+    servers_pool_file: 'servers_pool.json',
+    users_info_file: 'users_info.json',
     logs_folder: 'logs',
   },
 };

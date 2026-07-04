@@ -46,8 +46,8 @@ function isConcurrencyConfig(value: unknown): boolean {
 function isPathsConfig(value: unknown): boolean {
   return (
     isRecord(value) &&
-    isNonEmptyString(value['servers_config_file']) &&
-    isNonEmptyString(value['user_info_file']) &&
+    isNonEmptyString(value['servers_pool_file']) &&
+    isNonEmptyString(value['users_info_file']) &&
     isNonEmptyString(value['logs_folder'])
   );
 }
