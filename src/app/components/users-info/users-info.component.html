@@ -51,13 +51,13 @@
           ></i>
           {{ isEditing ? 'Update' : 'Add' }}
         </button>
-        <button type="button" class="btn btn-outline-secondary" (click)="reset()">
+        <button type="button" class="btn btn-secondary" (click)="reset()">
           <i class="bi bi-arrow-counterclockwise me-2" aria-hidden="true"></i>Reset
         </button>
         <button
           *ngIf="isEditing"
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-secondary"
           (click)="cancel()"
         >
           <i class="bi bi-x-lg me-2" aria-hidden="true"></i>Cancel
