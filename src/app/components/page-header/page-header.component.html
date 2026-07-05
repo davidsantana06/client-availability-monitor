@@ -1,16 +1,11 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h3 mb-0">{{ title }}</h1>
   <div class="d-flex gap-2">
-    <label class="btn btn-outline-secondary mb-0" [appTooltip]="importTooltip">
+    <label class="btn btn-primary mb-0" [appTooltip]="importTooltip">
       <i class="bi bi-upload me-2" aria-hidden="true"></i>Import
       <input type="file" [accept]="accept" (change)="import($event)" hidden />
     </label>
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      [appTooltip]="exportTooltip"
-      (click)="export()"
-    >
+    <button type="button" class="btn btn-success" [appTooltip]="exportTooltip" (click)="export()">
       <i class="bi bi-download me-2" aria-hidden="true"></i>Export
     </button>
   </div>
