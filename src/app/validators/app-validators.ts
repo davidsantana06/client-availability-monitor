@@ -3,7 +3,10 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 export const PORT_MIN_VALUE = 1;
 export const PORT_MAX_VALUE = 65535;
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const IPV4_PATTERN = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+export const IPV4_PATTERN =
+  /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+export const DNS_PATTERN =
+  /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -53,10 +56,16 @@ export function isIpv4Value(value: unknown): boolean {
   return isNonEmptyString(value) && IPV4_PATTERN.test(value);
 }
 
-export function isIpv4Control(control: AbstractControl): ValidationErrors | null {
+export function isDnsValue(value: unknown): boolean {
+  return isNonEmptyString(value) && DNS_PATTERN.test(value);
+}
+
+export function isAddressControl(control: AbstractControl): ValidationErrors | null {
   if (isEmpty(control.value)) return null;
 
-  return isIpv4Value(control.value) ? null : { ipv4: true };
+  const value = String(control.value).trim();
+  const isValid = /^[\d.]+$/.test(value) ? isIpv4Value(value) : isDnsValue(value);
+  return isValid ? null : { address: true };
 }
 
 export function hasUniqueValues(values: string[]): boolean {
@@ -71,13 +80,6 @@ export function isUniqueInControl(getExisting: () => string[]): ValidatorFn {
     const value = normalize(control.value);
     const existing = getExisting().map(normalize);
     return existing.includes(value) ? { notUnique: true } : null;
-  };
-}
-
-export function isExactlyOneOfControl(keys: string[]): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const filled = keys.filter((key) => !isEmpty(group.get(key)?.value));
-    return filled.length === 1 ? null : { exactlyOneOf: true };
   };
 }
 

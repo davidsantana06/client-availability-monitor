@@ -14,7 +14,7 @@
     <div class="d-flex gap-2 mb-3">
       <button
         type="button"
-        class="btn btn-sm btn-outline-primary"
+        class="btn btn-sm btn-primary"
         [disabled]="view.allChecked && !view.orphans.length"
         (click)="service.selectAll(view.hostnames)"
       >
@@ -22,7 +22,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-sm btn-secondary"
         [disabled]="!view.selectedCount"
         (click)="service.clear()"
       >

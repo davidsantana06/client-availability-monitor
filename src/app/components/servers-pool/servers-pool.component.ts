@@ -8,18 +8,17 @@ import {
   PORT_MAX_VALUE,
   PORT_MIN_VALUE,
   hasError,
-  isExactlyOneOfControl,
-  isIpv4Control,
+  isAddressControl,
+  isIpv4Value,
   isPortControl,
   isUniqueInControl,
 } from '@app/validators/app-validators';
 
 const LIMITS = {
   hostnameMaxLength: 253,
+  addressMaxLength: 253,
   portMinValue: PORT_MIN_VALUE,
   portMaxValue: PORT_MAX_VALUE,
-  ipMaxLength: 15,
-  dnsMaxLength: 253,
 } as const;
 
 @Component({
@@ -37,22 +36,21 @@ export class ServersPoolComponent implements OnInit {
   removalIndex: number | null = null;
 
   ngOnInit(): void {
-    this.form = this.fb.group(
-      {
-        hostname: [
-          '',
-          [
-            Validators.required,
-            isUniqueInControl(() => this.otherHostnames()),
-            Validators.maxLength(LIMITS.hostnameMaxLength),
-          ],
+    this.form = this.fb.group({
+      hostname: [
+        '',
+        [
+          Validators.required,
+          isUniqueInControl(() => this.otherHostnames()),
+          Validators.maxLength(LIMITS.hostnameMaxLength),
         ],
-        port: [null, [Validators.required, isPortControl]],
-        ip: ['', [isIpv4Control, Validators.maxLength(LIMITS.ipMaxLength)]],
-        dns: ['', Validators.maxLength(LIMITS.dnsMaxLength)],
-      },
-      { validators: isExactlyOneOfControl(['ip', 'dns']) },
-    );
+      ],
+      address: [
+        '',
+        [Validators.required, isAddressControl, Validators.maxLength(LIMITS.addressMaxLength)],
+      ],
+      port: [null, [Validators.required, isPortControl]],
+    });
   }
 
   get isEditing(): boolean {
@@ -70,12 +68,6 @@ export class ServersPoolComponent implements OnInit {
     };
   }
 
-  get isAddressInvalid(): boolean {
-    const ip = this.form.get('ip')!;
-    const dns = this.form.get('dns')!;
-    return this.form.hasError('exactlyOneOf') && (ip.touched || dns.touched);
-  }
-
   addressType(server: Server): 'IP' | 'DNS' {
     const hasIp = !!server.ip;
     return hasIp ? 'IP' : 'DNS';
@@ -89,10 +81,10 @@ export class ServersPoolComponent implements OnInit {
     if (this.form.invalid) return;
 
     const raw = this.form.getRawValue();
+    const address = raw.address.trim();
     const server: Server = { hostname: raw.hostname.trim(), port: raw.port };
-    const hasIp = !!raw.ip;
-    if (hasIp) server.ip = raw.ip;
-    else server.dns = raw.dns;
+    if (isIpv4Value(address)) server.ip = address;
+    else server.dns = address;
 
     if (this.isEditing) this.service.updateOne(this.editingIndex!, server);
     else this.service.addOne(server);
@@ -131,14 +123,13 @@ export class ServersPoolComponent implements OnInit {
   private fillForm(server: Server): void {
     this.form.setValue({
       hostname: server.hostname,
+      address: server.ip ?? server.dns ?? '',
       port: server.port,
-      ip: server.ip ?? '',
-      dns: server.dns ?? '',
     });
   }
 
   private clearForm(): void {
-    this.form.reset({ hostname: '', port: null, ip: '', dns: '' });
+    this.form.reset({ hostname: '', address: '', port: null });
   }
 
   private otherHostnames(): string[] {

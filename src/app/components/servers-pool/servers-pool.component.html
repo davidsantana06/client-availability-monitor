@@ -5,7 +5,7 @@
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-5">
           <label class="form-label" for="s-hostname">Hostname</label>
           <input
             id="s-hostname"
@@ -22,6 +22,18 @@
             </span>
           </div>
         </div>
+        <div class="col-md-5">
+          <label class="form-label" for="s-address">Address</label>
+          <input
+            id="s-address"
+            type="text"
+            class="form-control"
+            formControlName="address"
+            [attr.maxlength]="limits.addressMaxLength"
+            [class.is-invalid]="hasError(form,'address')"
+          />
+          <div class="invalid-feedback">Enter a valid IPv4 address or DNS name.</div>
+        </div>
         <div class="col-md-2">
           <label class="form-label" for="s-port">Port</label>
           <input
@@ -36,32 +48,6 @@
           />
           <div class="invalid-feedback">Enter a valid port (1–65535).</div>
         </div>
-        <div class="col-md-3">
-          <label class="form-label" for="s-ip">IP</label>
-          <input
-            id="s-ip"
-            type="text"
-            class="form-control"
-            formControlName="ip"
-            [attr.maxlength]="limits.ipMaxLength"
-            [class.is-invalid]="hasError(form,'ip') || isAddressInvalid"
-          />
-          <div class="invalid-feedback">Enter a valid IPv4 address.</div>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label" for="s-dns">DNS</label>
-          <input
-            id="s-dns"
-            type="text"
-            class="form-control"
-            formControlName="dns"
-            [attr.maxlength]="limits.dnsMaxLength"
-            [class.is-invalid]="isAddressInvalid"
-          />
-        </div>
-      </div>
-      <div *ngIf="isAddressInvalid" class="text-danger small mt-2">
-        Provide exactly one of IP or DNS.
       </div>
       <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
@@ -72,13 +58,13 @@
           ></i>
           {{ isEditing ? 'Update' : 'Add' }}
         </button>
-        <button type="button" class="btn btn-outline-secondary" (click)="reset()">
+        <button type="button" class="btn btn-secondary" (click)="reset()">
           <i class="bi bi-arrow-counterclockwise me-2" aria-hidden="true"></i>Reset
         </button>
         <button
           *ngIf="isEditing"
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-secondary"
           (click)="cancel()"
         >
           <i class="bi bi-x-lg me-2" aria-hidden="true"></i>Cancel

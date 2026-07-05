@@ -41,7 +41,7 @@ O CAM substitui a edição manual dos arquivos do SAM por uma interface dividida
 Os dados vivem inteiramente em memória (sem API, banco ou `localStorage`), semeados com valores de exemplo. O fluxo é:
 
 1. **Começar** — a home apresenta o CAM e um botão “Get started” que abre as abas, já preenchidas com exemplos. Para partir de arquivos existentes, as abas têm seu próprio botão “Import”.
-2. **Editar e validar** — cada aba valida os dados (campos obrigatórios, e-mail, IPv4, faixa de portas e unicidade de `hostname`/`email`, comparada case-insensitive + `trim`) e bloqueia o salvamento inválido. A importação valida o conteúdo do arquivo, não apenas o nome. Renomear ou remover um servidor em Servers propaga em cascata para Monitor List, preservando a integridade referencial.
+2. **Editar e validar** — cada aba valida os dados (campos obrigatórios, e-mail, endereço IPv4 ou DNS, faixa de portas e unicidade de `hostname`/`email`, comparada case-insensitive + `trim`) e bloqueia o salvamento inválido. A importação valida o conteúdo do arquivo, não apenas o nome. Renomear ou remover um servidor em Servers propaga em cascata para Monitor List, preservando a integridade referencial.
 3. **Exportar** — o “Export” de cada aba baixa aquele arquivo, pronto para a pasta do SAM.
 
 ## 🏛️ Arquitetura
@@ -119,7 +119,7 @@ O GitHub Pages serve a aplicação diretamente dessa branch compilada.
 
 A suíte de testes cobre:
 
-- Validadores (`validators/app-validators.spec.ts`) — `isIntegerControl`, `isPortControl`, `isEmailControl`, `isIpv4Control`, `isExactlyOneOfControl`, `isUniqueInControl` e o auxiliar `hasError`.
+- Validadores (`validators/app-validators.spec.ts`) — `isIntegerControl`, `isPortControl`, `isEmailControl`, `isDnsValue`, `isAddressControl`, `isUniqueInControl` e o auxiliar `hasError`.
 - Integridade referencial (`services/servers-pool.service.spec.ts`) — a cascata Servers → Monitor List ao renomear ou remover um servidor.
 - Guards de importação (`services/*.service.spec.ts`) — cada `import` aceita um arquivo válido e rejeita JSON malformado, formato inválido e duplicatas.
 
