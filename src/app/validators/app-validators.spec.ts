@@ -2,10 +2,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import {
   hasError,
+  isAddressControl,
+  isDnsValue,
   isEmailControl,
-  isExactlyOneOfControl,
   isIntegerControl,
-  isIpv4Control,
   isPortControl,
   isUniqueInControl,
 } from '@app/validators/app-validators';
@@ -44,34 +44,38 @@ describe('app-validators', () => {
     });
   });
 
-  describe('isIpv4Control', () => {
-    it('accepts valid addresses', () => {
-      expect(isIpv4Control(new FormControl('0.0.0.0'))).toBeNull();
-      expect(isIpv4Control(new FormControl('255.255.255.255'))).toBeNull();
-      expect(isIpv4Control(new FormControl('8.8.8.8'))).toBeNull();
+  describe('isDnsValue', () => {
+    it('accepts valid DNS names', () => {
+      expect(isDnsValue('example.com')).toBeTrue();
+      expect(isDnsValue('one.one.one.one')).toBeTrue();
+      expect(isDnsValue('host-1')).toBeTrue();
     });
 
-    it('rejects invalid addresses', () => {
-      expect(isIpv4Control(new FormControl('256.0.0.1'))).toEqual({ ipv4: true });
-      expect(isIpv4Control(new FormControl('1.2.3'))).toEqual({ ipv4: true });
-      expect(isIpv4Control(new FormControl('1.2.3.4.5'))).toEqual({ ipv4: true });
-      expect(isIpv4Control(new FormControl('abc'))).toEqual({ ipv4: true });
+    it('rejects malformed DNS names', () => {
+      expect(isDnsValue('')).toBeFalse();
+      expect(isDnsValue('-bad.com')).toBeFalse();
+      expect(isDnsValue('has space')).toBeFalse();
     });
   });
 
-  describe('isExactlyOneOfControl', () => {
-    const validator = isExactlyOneOfControl(['ip', 'dns']);
-    const group = (ip: string, dns: string) =>
-      new FormGroup({ ip: new FormControl(ip), dns: new FormControl(dns) });
-
-    it('accepts exactly one filled field', () => {
-      expect(validator(group('8.8.8.8', ''))).toBeNull();
-      expect(validator(group('', 'example.com'))).toBeNull();
+  describe('isAddressControl', () => {
+    it('treats empty as valid (delegated to required)', () => {
+      expect(isAddressControl(new FormControl(null))).toBeNull();
+      expect(isAddressControl(new FormControl(''))).toBeNull();
     });
 
-    it('rejects when none or both are filled', () => {
-      expect(validator(group('', ''))).toEqual({ exactlyOneOf: true });
-      expect(validator(group('8.8.8.8', 'example.com'))).toEqual({ exactlyOneOf: true });
+    it('accepts a valid IPv4 or hostname', () => {
+      expect(isAddressControl(new FormControl('8.8.8.8'))).toBeNull();
+      expect(isAddressControl(new FormControl('example.com'))).toBeNull();
+    });
+
+    it('rejects a malformed IPv4 instead of treating it as a DNS name', () => {
+      expect(isAddressControl(new FormControl('1.2.3'))).toEqual({ address: true });
+      expect(isAddressControl(new FormControl('256.0.0.1'))).toEqual({ address: true });
+    });
+
+    it('rejects a malformed DNS name', () => {
+      expect(isAddressControl(new FormControl('has space'))).toEqual({ address: true });
     });
   });
 
